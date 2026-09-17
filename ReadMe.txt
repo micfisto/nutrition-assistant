@@ -4,7 +4,7 @@ NUTRITION ASSISTANT
 	1. Терликова Алеся / micfisto
 	2. Сцецевич Дарья / Daria722
 	3. Соловей Светлана / SoloveySI
-	4. Орлов Антон / 
+	4. Орлов Антон / 375375375375
 
 О ПРОЕКТЕ
 	Название: Nutrition Assistant
