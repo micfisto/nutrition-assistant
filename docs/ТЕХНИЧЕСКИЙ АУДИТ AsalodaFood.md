@@ -1,5 +1,6 @@
 
 **Название:** AsalodaFood
+
 **Ссылка:** https://www.asalodafood.by/
 
 ### Краткое описание ресурса
