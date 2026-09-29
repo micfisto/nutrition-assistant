@@ -1,3 +1,6 @@
+# Структура проекта
+
+```text
 nutrition-assistant/
 ├── client/                     # Фронтенд (SPA на Vanilla JS / Vite)
 │   ├── public/                 # Статические ассеты (логотипы, иконки, фавикон)
@@ -32,9 +35,9 @@ nutrition-assistant/
 │
 ├── server/                     # Бэкенд (Node.js + Express)
 │   ├── src/
-│   │   ├── config/             # Конфигурация подкючений
+│   │   ├── config/             # Конфигурация подключений
 │   │   │   ├── supabase.js     # Подключение к базе данных Supabase
-│   │   │   └── env.js          # Загрузка переменная окружения (.env)
+│   │   │   └── env.js          # Загрузка переменных окружения (.env)
 │   │   ├── controllers/        # Логика обработки эндпоинтов (Request/Response)
 │   │   │   ├── authController.js # Вход, регистрация, JWT
 │   │   │   ├── userController.js # Профиль, расчет КБЖУ
@@ -44,10 +47,10 @@ nutrition-assistant/
 │   │   │   ├── authMiddleware.js # Проверка JWT-токена в заголовках
 │   │   │   └── errorMiddleware.js# Глобальная обработка ошибок
 │   │   ├── routes/             # Маршруты API (Endpoints)
-│   │   │   ├── authRoutes.js   # /api/auth/*
-│   │   │   ├── userRoutes.js   # /api/user/*
-│   │   │   ├── menuRoutes.js   # /api/menu/*
-│   │   │   └── aiRoutes.js     # /api/ai/*
+│   │   │   ├── authRoutes.js   # /api/auth/
+│   │   │   ├── userRoutes.js   # /api/user/
+│   │   │   ├── menuRoutes.js   # /api/menu/
+│   │   │   └── aiRoutes.js     # /api/ai/
 │   │   ├── services/           # Бизнес-логика и внешние интеграции
 │   │   │   └── aiService.js    # Промпт-инжиниринг и интеграция с Gemini/Groq API
 │   │   ├── utils/              # Хелперы
