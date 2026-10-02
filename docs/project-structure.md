@@ -1,66 +1,85 @@
 # Структура проекта
 
 ```text
-nutrition-assistant/
-├── client/                     # Фронтенд (SPA на Vanilla JS / Vite)
-│   ├── public/                 # Статические ассеты (логотипы, иконки, фавикон)
-│   │   └── favicon.ico
-│   ├── src/
-│   │   ├── assets/             # Изображения, шрифты, стили
-│   │   │   ├── styles/         # CSS-файлы (main.css, variables.css, components.css)
-│   │   │   └── images/         # Заглушки блюд, фото
-│   │   ├── components/         # Переиспользуемые UI-компоненты
-│   │   │   ├── Header.js       # Шапка сайта и навигация
-│   │   │   ├── Footer.js       # Подвал
-│   │   │   ├── Modal.js        # Универсальное модальное окно (для Auth)
-│   │   │   ├── DishCard.js     # Карточка блюда с КБЖУ
-│   │   │   └── ChatWidget.js   # Виджет AI-чата
-│   │   ├── pages/              # Основные экраны приложения
-│   │   │   ├── Home.js         # Главная страница (Лендинг + Калькулятор)
-│   │   │   ├── Plan.js         # Персональный план питания на неделю
-│   │   │   └── Profile.js      # Личный кабинет и Избранное
-│   │   ├── services/           # Запросы к Backend API (Fetch / Axios wrappers)
-│   │   │   ├── api.js          # Базовый HTTP-клиент с прокидыванием JWT
-│   │   │   ├── authService.js  # Запросы авторизации (login, register, /me)
-│   │   │   ├── planService.js  # Запросы меню, замены блюд, КБЖУ
-│   │   │   └── aiService.js    # Запросы к AI-чату
-│   │   ├── utils/              # Вспомогательные скрипты
-│   │   │   ├── localStorage.js # Работа с LocalStorage (сохранение черновиков)
-│   │   │   └── calcKbzu.js     # Клиентский расчёт формулы Миффлина-Сан Жеора
-│   │   ├── router.js           # Маршрутизатор (SPA-роутинг без перезагрузки)
-│   │   └── main.js             # Точка входа клиентского приложения
-│   ├── index.html              # Главный HTML-файл
-│   ├── vite.config.js          # Конфигурация Vite
-│   └── package.json            # Зависимости фронтенда
+nutrition-assistant/                  
+├── backend/                          
+│   ├── src/                          # Исходный код сервера
+│   │   ├── config/                   # Конфигурация (Supabase и т.д.)
+│   │   ├── controllers/              # Обработчики запросов
+│   │   ├── middlewares/              # JWT, логирование, ошибки
+│   │   ├── models/                   # Работа с базой данных
+│   │   ├── routes/                   # Маршруты API
+│   │   ├── services/                 # Бизнес-логика
+│   │   └── app.js                    # Точка входа сервера
+│   ├── .env.example                  # Шаблон переменных окружения
+│   └── package.json                  # Зависимости бэкенда
 │
-├── server/                     # Бэкенд (Node.js + Express)
+├── frontend/                         # Фронтенд (React / Vite)
+│   ├── public/                       # Статические ассеты (favicon, manifest, robots.txt)
 │   ├── src/
-│   │   ├── config/             # Конфигурация подключений
-│   │   │   ├── supabase.js     # Подключение к базе данных Supabase
-│   │   │   └── env.js          # Загрузка переменных окружения (.env)
-│   │   ├── controllers/        # Логика обработки эндпоинтов (Request/Response)
-│   │   │   ├── authController.js # Вход, регистрация, JWT
-│   │   │   ├── userController.js # Профиль, расчет КБЖУ
-│   │   │   ├── menuController.js # Выдача блюд, кастомизация, замена
-│   │   │   └── aiController.js   # Обработка промптов и вызов AI API
-│   │   ├── middlewares/        # Промежуточные обработчики
-│   │   │   ├── authMiddleware.js # Проверка JWT-токена в заголовках
-│   │   │   └── errorMiddleware.js# Глобальная обработка ошибок
-│   │   ├── routes/             # Маршруты API (Endpoints)
-│   │   │   ├── authRoutes.js   # /api/auth/
-│   │   │   ├── userRoutes.js   # /api/user/
-│   │   │   ├── menuRoutes.js   # /api/menu/
-│   │   │   └── aiRoutes.js     # /api/ai/
-│   │   ├── services/           # Бизнес-логика и внешние интеграции
-│   │   │   └── aiService.js    # Промпт-инжиниринг и интеграция с Gemini/Groq API
-│   │   ├── utils/              # Хелперы
-│   │   │   └── jwt.js          # Генерация и верификация токенов
-│   │   └── app.js              # Инициализация Express-приложения и роутов
-│   ├── index.js                # Точка входа сервера (Запуск app.listen)
-│   ├── .env.example            # Пример файла переменных окружения
-│   └── package.json            # Зависимости бэкенда
-│
-├── Dockerfile                  # Докер-файл для сборки
-├── docker-compose.yml          # Сборка и запуск Client + Server в контейнерах
-├── .gitignore                  # Исключения Git (node_modules, .env)
-└── README.md                   # Описание проекта и инструкции
+│   │   ├── assets/                   # Картинки, SVG, шрифты, медиа-файлы
+│   │   │   ├── icons/
+│   │   │   └── images/
+│   │   │
+│   │   ├── components/               # Общие (переиспользуемые) UI-компоненты
+│   │   │   ├── ui/                   # Атомарные элементы (Button, Input, Modal, Loader, Card)
+│   │   │   ├── layout/               # Каркас приложения (Header, Sidebar, Footer, Container)
+│   │   │   └── forms/                # Универсальные обертки над формами
+│   │   │
+│   │   ├── pages/                    # Страницы приложения (View-слой для роутинга)
+│   │   │   ├── HomePage/             # Главная / Лендинг
+│   │   │   ├── LoginPage/            # Вход
+│   │   │   ├── RegisterPage/         # Регистрация
+│   │   │   ├── DashboardPage/        # Дашборд пользователя
+│   │   │   ├── MealsPage/            # Дневник питания / блюда
+│   │   │   └── NotFoundPage/         # 404
+│   │   │
+│   │   ├── modules/                  # Крупные изолированные бизнес-модули (Features)
+│   │   │   ├── auth/                 # Модуль авторизации
+│   │   │   │   ├── components/       # LoginForm, RegisterForm
+│   │   │   │   ├── hooks/            # useAuth, useLogin
+│   │   │   │   └── authService.js    # Запросы к API (/api/v1/auth)
+│   │   │   ├── meals/                # Модуль трекинга еды
+│   │   │   │   ├── components/       # MealCard, MealList, AddMealModal
+│   │   │   │   ├── hooks/            # useMeals
+│   │   │   │   └── mealsService.js   # Запросы к API (/api/v1/meals)
+│   │   │   └── profile/              # Модуль профиля пользователя
+│   │   │
+│   │   ├── context/                  # React Contexts (глобальное состояние)
+│   │   │   ├── AuthContext.jsx       # Состояние авторизованного юзера
+│   │   │   └── ThemeContext.jsx      # Тема (светлая/тёмная)
+│   │   │
+│   │   ├── hooks/                    # Глобальные кастомные хуки
+│   │   │   ├── useDebounce.js
+│   │   │   └── useLocalStorage.js
+│   │   │
+│   │   ├── services/                 # Инфраструктура работы с сетевым слоем
+│   │   │   ├── api.js                # Настроенный Axios / fetch-клиент с интерцепторами
+│   │   │   └── supabaseClient.js     # Подключение к Supabase (если прямо с фронта)
+│   │   │
+│   │   ├── utils/                    # Вспомогательные функции (чистые функции)
+│   │   │   ├── formatDate.js          # Форматирование дат
+│   │   │   ├── calculateCalories.js   # Формулы калорий
+│   │   │   └── validators.js         # Валидация форм (email, password)
+│   │   │
+│   │   ├── router/                   # Настройка роутинга (React Router)
+│   │   │   ├── AppRouter.jsx         # Карта маршрутов
+│   │   │   └── PrivateRoute.jsx      # Защищенный роут (только для авторизованных)
+│   │   │
+│   │   ├── styles/                   # Глобальные стили
+│   │   │   ├── global.css / .scss    # Сброс CSS, базовые стили
+│   │   │   └── variables.css         # CSS-переменные (цвета, отступы, шрифты)
+│   │   │
+│   │   ├── App.jsx                   # Главный компонент (Провайдеры + Роутер)
+│   │   └── main.jsx                  # Точка входа Vite (ReactDOM.render)
+│   │
+│   ├── .env.example                  # VITE_API_URL, VITE_SUPABASE_URL
+│   ├── index.html                    # HTML-шаблон для Vite
+│   ├── vite.config.js                # Конфиг сборщика Vite (алиасы paths, прокси)
+│   └── package.json                  # Зависимости фронтенда
+
+├── docs/                             # Документация проекта
+│   ├── tasks.md                      # Декомпозиция задач и кто за что отвечает
+│   ├── features.md                   # Функциональные возможности
+│   └── project-structure.md          # Подробная карта проекта
+└── README.md                         
