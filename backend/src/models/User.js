@@ -1,4 +1,3 @@
-import {crypto} from "node:crypto";
 import {UserRole} from "../enums/UserRole.js";
 import {UserStatus} from "../enums/UserStatus.js";
 import {DomainError} from "../errors/DomainError.js";
@@ -20,15 +19,27 @@ export class User {
     static LOGIN_REGEX = /^[a-z0-9_-]+$/;
     static USERNAME_REGEX = /^[a-zа-яA-ZА-ЯёЁ0-9 _-]+$/;
 
-    constructor(login, username, email, passwordHash, role = UserRole.USER) {
-        this.#id = crypto.randomUUID();
+    constructor(login, username, email, passwordHash, role = UserRole.USER, status = UserStatus.ACTIVE, deactivatedAt = null, id = crypto.randomUUID()) {
+        this.#id = id;
         this.#login = this.#validateLogin(login);
         this.#username = this.#validateUsername(username);
         this.#email = this.#validateEmail(email);
         this.#passwordHash = this.#validatePasswordHash(passwordHash);
         this.#role = role;
-        this.#status = UserStatus.ACTIVE;
-        this.#deactivatedAt = null;
+        this.#status = status;
+        this.#deactivatedAt = deactivatedAt ? new Date(deactivatedAt) : null;
+    }
+
+    static create({login, username, email, passwordHash, role = UserRole.USER}) {
+        const id = crypto.randomUUID();
+        const status = UserStatus.ACTIVE;
+        const deactivatedAt = null;
+
+        return new User(id, login, username, email, passwordHash, role, status, deactivatedAt);
+    }
+
+    static restore({id, login, username, email, passwordHash, role, status, deactivatedAt}) {
+      return new User(id, login, username, email, passwordHash, role, status, deactivatedAt);
     }
 
     get id() {
@@ -145,7 +156,7 @@ export class User {
         if (!username || typeof username !== 'string')
             throw new DomainError(UserErrors.UsernameEmpty);
 
-        const normalized = username.trim().replace(/\s+/g, '');
+        const normalized = username.trim().replace(/\s+/g, ' ');
 
         if (normalized.length < 3)
             throw new DomainError(UserErrors.UsernameTooShort);

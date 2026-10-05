@@ -1,4 +1,3 @@
-import {crypto} from "node:crypto";
 import {ActivityLevel} from "../enums/ActivityLevel.js";
 import {GoalType} from "../enums/GoalType.js";
 import {DomainError} from "../errors/DomainError.js";
@@ -26,6 +25,22 @@ export class UserProfile {
         this.#activityLevel = activityLevel;
         this.#goal = goal;
         this.#touch();
+    }
+
+    static create({
+                      userId,
+                      birthDate,
+                      weight,
+                      height,
+                      activityLevel = ActivityLevel.MODERATE,
+                      goal = GoalType.MAINTAIN
+                  }) {
+        const id = crypto.randomUUID();
+        return new UserProfile(id, userId, birthDate, weight, height, activityLevel, goal);
+    }
+
+    static restore({id, userId, birthDate, weight, height, activityLevel, goal, updatedAt}) {
+        return new UserProfile(id, userId, birthDate, weight, height, activityLevel, goal), updatedAt;
     }
 
     get id() {
