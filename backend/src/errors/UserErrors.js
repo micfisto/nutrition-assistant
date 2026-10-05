@@ -19,4 +19,5 @@ export class UserErrors {
     static CannotBeDeactivated = 'USER_CANNOT_BE_DEACTIVATED';
     static NotRecoverable = 'USER_NOT_RECOVERABLE';
     static AlreadyDeleted = 'USER_ALREADY_DELETED';
+    static IdRequired = 'USER_ID_REQUIRED';
 }

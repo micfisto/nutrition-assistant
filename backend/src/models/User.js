@@ -13,14 +13,15 @@ export class User {
     #role;
     #status;
     #deactivatedAt;
+    #updatedAt;
 
     static RECOVERY_PERIOD_DAYS = 30;
 
     static LOGIN_REGEX = /^[a-z0-9_-]+$/;
     static USERNAME_REGEX = /^[a-zа-яA-ZА-ЯёЁ0-9 _-]+$/;
 
-    constructor(login, username, email, passwordHash, role = UserRole.USER, status = UserStatus.ACTIVE, deactivatedAt = null, id = crypto.randomUUID()) {
-        this.#id = id;
+    constructor(id, login, username, email, passwordHash, role = UserRole.USER, status = UserStatus.ACTIVE, deactivatedAt = null, updatedAt = null) {
+        this.#id = id || crypto.randomUUID();
         this.#login = this.#validateLogin(login);
         this.#username = this.#validateUsername(username);
         this.#email = this.#validateEmail(email);
@@ -28,6 +29,7 @@ export class User {
         this.#role = role;
         this.#status = status;
         this.#deactivatedAt = deactivatedAt ? new Date(deactivatedAt) : null;
+        this.#updatedAt = updatedAt ? new Date(updatedAt) : new Date();
     }
 
     static create({login, username, email, passwordHash, role = UserRole.USER}) {
@@ -38,8 +40,10 @@ export class User {
         return new User(id, login, username, email, passwordHash, role, status, deactivatedAt);
     }
 
-    static restore({id, login, username, email, passwordHash, role, status, deactivatedAt}) {
-      return new User(id, login, username, email, passwordHash, role, status, deactivatedAt);
+    static restore({id, login, username, email, passwordHash, role, status, deactivatedAt, updatedAt}) {
+        if (!id)
+            throw new DomainError(UserErrors.IdRequired);
+        return new User(id, login, username, email, passwordHash, role, status, deactivatedAt, updatedAt);
     }
 
     get id() {
@@ -67,27 +71,39 @@ export class User {
     }
 
     get deactivatedAt() {
-        return this.#deactivatedAt;
+        return this.#deactivatedAt ? new Date(this.#deactivatedAt) : null;
+    }
+
+    get updatedAt() {
+        return new Date(this.#updatedAt);
+    }
+
+    #touch() {
+        this.#updatedAt = new Date();
     }
 
     changeLogin(newLogin) {
         this.#ensureIsActive();
         this.#login = this.#validateLogin(newLogin);
+        this.#touch();
     }
 
     changePassword(newPasswordHash) {
         this.#ensureIsActive();
         this.#passwordHash = this.#validatePasswordHash(newPasswordHash);
+        this.#touch();
     }
 
     changeEmail(newEmail) {
         this.#ensureIsActive();
         this.#email = this.#validateEmail(newEmail);
+        this.#touch();
     }
 
     changeUsername(newUsername) {
         this.#ensureIsActive();
         this.#username = this.#validateUsername(newUsername);
+        this.#touch();
     }
 
     deactivate() {
@@ -96,6 +112,7 @@ export class User {
 
         this.#deactivatedAt = new Date();
         this.#status = UserStatus.DEACTIVATED;
+        this.#touch();
     }
 
     recover() {
@@ -111,6 +128,8 @@ export class User {
 
         this.#deactivatedAt = null;
         this.#status = UserStatus.ACTIVE;
+
+        this.#touch();
     }
 
     delete() {
@@ -120,12 +139,13 @@ export class User {
         this.#anonymize();
         this.#status = UserStatus.DELETED;
         this.#deactivatedAt = null;
+        this.#touch();
     }
 
     #anonymize() {
         const shortId = this.#id.replace(/-/g, '').slice(0, 8);
 
-        this.#login = `delete_use_${shortId}`;
+        this.#login = `delete_user_${shortId}`;
         this.#passwordHash = crypto.randomUUID().replace(/-/g, '');
         this.#email = `${shortId}@example.deleted`;
         this.#username = `delete_user_${shortId}`;
