@@ -7,4 +7,5 @@ export class UserProfileErrors{
 
     static InvalidWeight = 'PROFILE_INVALID_WEIGHT';
     static InvalidHeight = 'PROFILE_INVALID_HEIGHT';
+    static ProfileIdEmpty = 'PROFILE_ID_EMPTY';
 }

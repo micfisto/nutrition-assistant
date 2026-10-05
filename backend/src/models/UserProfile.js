@@ -13,7 +13,7 @@ export class UserProfile {
     #goal;
     #updatedAt;
 
-    constructor(id, userId, birthDate, weight, height, activityLevel = ActivityLevel.MODERATE, goal = GoalType.MAINTAIN) {
+    constructor(id, userId, birthDate, weight, height, activityLevel = ActivityLevel.MODERATE, goal = GoalType.MAINTAIN, updatedAt = null) {
         if (!userId)
             throw new DomainError(UserProfileErrors.ProfileUserIdEmpty);
 
@@ -24,7 +24,7 @@ export class UserProfile {
         this.#height = this.#validateHeight(height);
         this.#activityLevel = activityLevel;
         this.#goal = goal;
-        this.#touch();
+        this.#updatedAt = updatedAt ? new Date(updatedAt) : new Date();
     }
 
     static create({
@@ -40,7 +40,9 @@ export class UserProfile {
     }
 
     static restore({id, userId, birthDate, weight, height, activityLevel, goal, updatedAt}) {
-        return new UserProfile(id, userId, birthDate, weight, height, activityLevel, goal), updatedAt;
+        if (!id)
+            throw new DomainError(UserProfileErrors.ProfileIdEmpty);
+        return new UserProfile(id, userId, birthDate, weight, height, activityLevel, goal, updatedAt);
     }
 
     get id() {
@@ -72,7 +74,7 @@ export class UserProfile {
     }
 
     get updatedAt() {
-        return this.#updatedAt;
+        return new Date(this.#updatedAt);
     }
 
     get age() {
