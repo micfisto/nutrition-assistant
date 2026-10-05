@@ -27,8 +27,13 @@ export class User {
         this.#email = this.#validateEmail(email);
         this.#passwordHash = this.#validatePasswordHash(passwordHash);
         this.#role = role;
+
+        const parsedDeactivatedAt = deactivatedAt ? new Date(deactivatedAt) : null;
+        if (status === UserStatus.DEACTIVATED && !parsedDeactivatedAt)
+            throw new DomainError(UserErrors.NotRecoverable);
+
         this.#status = status;
-        this.#deactivatedAt = deactivatedAt ? new Date(deactivatedAt) : null;
+        this.#deactivatedAt = parsedDeactivatedAt;
         this.#updatedAt = updatedAt ? new Date(updatedAt) : new Date();
     }
 
