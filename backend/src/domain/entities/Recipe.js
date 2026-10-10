@@ -1,6 +1,7 @@
 import {DomainError} from "../errors/DomainError.js";
 import {RecipeErrors} from "../errors/RecipeErrors.js";
 import {Ingredient} from "./Ingredient.js";
+import {Validator} from "../helpers/Validator.js";
 
 export class Recipe {
     #id;
@@ -20,8 +21,7 @@ export class Recipe {
     }
 
     static create({title, description = '', servings = 1, ingredients = []}) {
-        const id = crypto.randomUUID();
-        return new Recipe(id, title, description, servings, ingredients)
+        return new Recipe(crypto.randomUUID(), title, description, servings, ingredients)
     }
 
     static restore({id, title, description, servings, ingredients, updatedAt}) {
@@ -34,7 +34,7 @@ export class Recipe {
                     ? item.ingredient
                     : Ingredient.restore(item.ingredient),
                 amountInGrams: item.amountInGrams
-            })) : ingredients;
+            })) : [];
 
         return new Recipe(id, title, description, servings, restoredIngredients, updatedAt)
     }
@@ -67,8 +67,7 @@ export class Recipe {
         const total = this.#ingredients.reduce((sum, item) => {
             return sum + (item.ingredient.caloriesPer100g * (item.amountInGrams / 100));
         }, 0);
-
-        return Math.round(total);
+        return Number(total.toFixed(1));
     }
 
     get totalProteins() {
@@ -93,6 +92,16 @@ export class Recipe {
         }, 0);
 
         return Number(total.toFixed(1));
+    }
+
+    get nutrientsPerServing() {
+        const servings = this.#servings || 1;
+        return {
+            calories: Math.round(this.totalCalories / servings),
+            protein: Number((this.totalProteins / servings).toFixed(1)),
+            fat: Number((this.totalFats / servings).toFixed(1)),
+            carbs: Number((this.totalCarbs / servings).toFixed(1))
+        };
     }
 
     #touch() {
@@ -121,9 +130,9 @@ export class Recipe {
 
         if (existingIndex !== -1) {
             const updatedAmount = this.#ingredients[existingIndex].amountInGrams + amountInGrams;
-            this.#ingredients[existingIndex] = { ingredient, amountInGrams: updatedAmount };
+            this.#ingredients[existingIndex] = {ingredient, amountInGrams: updatedAmount};
         } else {
-            this.#ingredients.push({ ingredient, amountInGrams });
+            this.#ingredients.push({ingredient, amountInGrams});
         }
 
         this.#touch();
@@ -135,31 +144,24 @@ export class Recipe {
     }
 
     #validateTitle(title) {
-        if (!title || typeof title !== 'string' || !title.trim())
-            throw new DomainError(RecipeErrors.TitleEmpty);
-
-        const trimmedTitle = title.trim().replace(/\s+/g, ' ');
-        if (trimmedTitle.length < 2)
-            throw new DomainError(RecipeErrors.TitleTooShort);
-        if (trimmedTitle.length > 100)
-            throw new DomainError(RecipeErrors.TitleTooLong);
-
-        return trimmedTitle;
+        return Validator.string(title, {
+            emptyError: RecipeErrors.TitleEmpty,
+            minLength: 2,
+            shortError: RecipeErrors.TitleTooShort,
+            maxLength: 100,
+            longError: RecipeErrors.TitleTooLong,
+            collapseSpaces: true
+        });
     }
 
     #validateServings(servings) {
-        if (typeof servings !== 'number' || isNaN(servings) || servings <= 0)
-            throw new DomainError(RecipeErrors.InvalidServings);
-
-        return servings;
+        return Validator.number(servings, {min: 0.1, errorKey: RecipeErrors.InvalidServings});
     }
 
-    #validateIngredient(ingredient, amountInGrams) {
-        if (!(ingredient instanceof Ingredient))
-            throw new DomainError(RecipeErrors.InvalidIngredient);
 
-        if (typeof amountInGrams !== 'number' || isNaN(amountInGrams) || amountInGrams <= 0)
-            throw new DomainError(RecipeErrors.InvalidAmount);
+    #validateIngredient(ingredient, amountInGrams) {
+        Validator.instanceOf(ingredient, Ingredient, RecipeErrors.InvalidIngredient);
+        Validator.number(amountInGrams, {min: 0.1,})
     }
 
     #validateIngredients(ingredients) {

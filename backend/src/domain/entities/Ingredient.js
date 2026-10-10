@@ -1,5 +1,6 @@
 import {DomainError} from "../errors/DomainError.js";
 import {IngredientErrors} from "../errors/IngredientErrors.js";
+import {Validator} from "../helpers/Validator.js";
 
 export class Ingredient {
     #id;
@@ -10,7 +11,7 @@ export class Ingredient {
     #carbsPer100g;
     #updatedAt;
 
-    constructor(id, name, caloriesPer100g=0, proteinsPer100g=0, fatsPer100g=0, carbsPer100g=0, updatedAt = null) {
+    constructor(id, name, caloriesPer100g = 0, proteinsPer100g = 0, fatsPer100g = 0, carbsPer100g = 0, updatedAt = null) {
         this.#id = id;
         this.#name = this.#validateName(name);
         this.#caloriesPer100g = this.#validateNutrient(caloriesPer100g, IngredientErrors.InvalidCalories);
@@ -89,21 +90,17 @@ export class Ingredient {
     }
 
     #validateNutrient(val, errorKey) {
-        if (typeof val !== 'number' || isNaN(val) || val < 0)
-            throw new DomainError(errorKey);
-        return val;
+        return Validator.number(val, {min: 0, errorKey})
     }
 
     #validateName(name) {
-        if (!name || typeof name !== 'string' || !name.trim())
-            throw new DomainError(IngredientErrors.NameEmpty);
-
-        const trimmedName = name.trim().replace(/\s+/g, ' ');
-        if (trimmedName.length < 1)
-            throw new DomainError(IngredientErrors.NameTooShort);
-        if (trimmedName.length > 50)
-            throw new DomainError(IngredientErrors.NameTooLong);
-
-        return trimmedName;
+        return Validator.string(name, {
+            emptyError: IngredientErrors.NameEmpty,
+            minLength: 1,
+            shortError: IngredientErrors.NameTooShort,
+            maxLength: 50,
+            longError: IngredientErrors.NameTooLong,
+            collapseSpaces: true
+        });
     }
 }

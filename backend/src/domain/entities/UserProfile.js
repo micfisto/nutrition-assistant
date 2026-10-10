@@ -11,9 +11,13 @@ export class UserProfile {
     #height;
     #activityLevel;
     #goal;
+    #allergenIds
+    /** IngredientIds []*/
+    #favoriteRecipeIds;
+    /** RecipeIds []*/
     #updatedAt;
 
-    constructor(id, userId, birthDate, weight, height, activityLevel = ActivityLevel.MODERATE, goal = GoalType.MAINTAIN, updatedAt = null) {
+    constructor(id, userId, birthDate, weight, height, activityLevel = ActivityLevel.MODERATE, goal = GoalType.MAINTAIN, allergenIds = [], favoriteRecipeIds = [], updatedAt = null) {
         if (!userId)
             throw new DomainError(UserProfileErrors.ProfileUserIdEmpty);
 
@@ -24,6 +28,8 @@ export class UserProfile {
         this.#height = this.#validateHeight(height);
         this.#activityLevel = activityLevel;
         this.#goal = goal;
+        this.#allergenIds = Array.isArray(allergenIds) ? allergenIds : [];
+        this.#favoriteRecipeIds = Array.isArray(favoriteRecipeIds) ? favoriteRecipeIds : [];
         this.#updatedAt = updatedAt ? new Date(updatedAt) : new Date();
     }
 
@@ -33,16 +39,29 @@ export class UserProfile {
                       weight,
                       height,
                       activityLevel = ActivityLevel.MODERATE,
-                      goal = GoalType.MAINTAIN
+                      goal = GoalType.MAINTAIN,
+                      allergenIds = [],
+                      favoriteRecipeIds = []
                   }) {
         const id = crypto.randomUUID();
-        return new UserProfile(id, userId, birthDate, weight, height, activityLevel, goal);
+        return new UserProfile(id, userId, birthDate, weight, height, activityLevel, goal, allergenIds, favoriteRecipeIds);
     }
 
-    static restore({id, userId, birthDate, weight, height, activityLevel, goal, updatedAt}) {
+    static restore({
+                       id,
+                       userId,
+                       birthDate,
+                       weight,
+                       height,
+                       activityLevel,
+                       goal,
+                       allergenIds = [],
+                       favoriteRecipeIds = [],
+                       updatedAt
+                   }) {
         if (!id)
             throw new DomainError(UserProfileErrors.ProfileIdEmpty);
-        return new UserProfile(id, userId, birthDate, weight, height, activityLevel, goal, updatedAt);
+        return new UserProfile(id, userId, birthDate, weight, height, activityLevel, goal, allergenIds, favoriteRecipeIds, updatedAt);
     }
 
     get id() {
@@ -71,6 +90,14 @@ export class UserProfile {
 
     get goal() {
         return this.#goal;
+    }
+
+    get allergenIds() {
+        return [...this.#allergenIds];
+    }
+
+    get favoriteRecipeIds() {
+        return [...this.#favoriteRecipeIds];
     }
 
     get updatedAt() {
@@ -114,6 +141,30 @@ export class UserProfile {
 
     changeGoal(goal) {
         this.#goal = goal;
+        this.#touch();
+    }
+
+    addAllergen(allergenId) {
+        if (!this.#allergenIds.includes(allergenId)){
+            this.#allergenIds.push(allergenId);
+            this.#touch();
+        }
+    }
+
+    removeAllergen(allergenId) {
+        this.#allergenIds = this.#allergenIds.filter(id => id !== allergenId);
+        this.#touch();
+    }
+
+    addFavoriteRecipe(favoriteRecipeId) {
+        if(!this.#favoriteRecipeIds.includes(favoriteRecipeId)){
+            this.#favoriteRecipeIds.push(favoriteRecipeId);
+            this.#touch();
+        }
+    }
+
+    removeFavoriteRecipe(favoriteRecipeId) {
+        this.#favoriteRecipeIds = this.#favoriteRecipeIds.filter(id => id !== favoriteRecipeId);
         this.#touch();
     }
 
