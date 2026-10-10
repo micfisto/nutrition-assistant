@@ -6,5 +6,4 @@ export class RecipeErrors {
     static InvalidServings = 'RECIPE_INVALID_SERVINGS';
     static ItemsEmpty = 'RECIPE_ITEMS_EMPTY';
     static InvalidIngredient = 'RECIPE_INVALID_INGREDIENT';
-    static InvalidAmount = 'RECIPE_INVALID_AMOUNT';
 }
