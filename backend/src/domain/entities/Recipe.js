@@ -171,4 +171,19 @@ export class Recipe {
         ingredients.forEach(i => this.#validateIngredient(i.ingredient, i.amountInGrams));
         return ingredients;
     }
+
+    toJSON(){
+        return {
+            id: this.#id,
+            title: this.#title,
+            description: this.#description,
+            servings: this.#servings,
+            ingredients: this.#ingredients.map(i => ({
+                ingredient: i.ingredient.toJSON ? i.ingredient.toJSON() : i.ingredient,
+                amountInGrams: i.amountInGrams
+            })),
+            nutrientsPerServing: this.nutrientsPerServing,
+            updatedAt: this.#updatedAt
+        };
+    }
 }

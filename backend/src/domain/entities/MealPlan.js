@@ -1,25 +1,27 @@
-import { DomainError } from "../errors/DomainError.js";
-import { MealPlanErrors } from "../errors/MealPlanErrors.js";
-import { Meal } from "./Meal.js";
+import {DomainError} from "../errors/DomainError.js";
+import {MealPlanErrors} from "../errors/MealPlanErrors.js";
+import {Meal} from "./Meal.js";
 
 export class MealPlan {
     #id;
     #userId;
     #title;
     #entries;
+    #updatedAt;
 
-    constructor(id = crypto.randomUUID(), userId, title, entries = []) {
+    constructor(id = crypto.randomUUID(), userId, title, entries = [], updatedAt = null) {
         this.#id = id;
         this.#userId = this.#validateUserId(userId);
         this.#title = this.#validateTitle(title);
         this.#entries = this.#validateEntries(entries);
+        this.#updatedAt = updatedAt ? new Date(updatedAt) : new Date();
     }
 
-    static create({ userId, title, entries = [] }) {
+    static create({userId, title, entries = []}) {
         return new MealPlan(crypto.randomUUID(), userId, title, entries);
     }
-    
-    static restore({ id, userId, title, entries }) {
+
+    static restore({id, userId, title, entries, updatedAt}) {
         if (!id) throw new DomainError(MealPlanErrors.IdRequired);
 
         const restoredEntries = Array.isArray(entries)
@@ -31,13 +33,32 @@ export class MealPlan {
             }))
             : [];
 
-        return new MealPlan(id, userId, title, restoredEntries);
+        return new MealPlan(id, userId, title, restoredEntries, updatedAt);
     }
 
-    get id() { return this.#id; }
-    get userId() { return this.#userId; }
-    get title() { return this.#title; }
-    get entries() { return [...this.#entries]; }
+    #touch() {
+        this.#updatedAt = new Date();
+    }
+
+    get id() {
+        return this.#id;
+    }
+
+    get userId() {
+        return this.#userId;
+    }
+
+    get title() {
+        return this.#title;
+    }
+
+    get entries() {
+        return [...this.#entries];
+    }
+
+    get updatedAt() {
+        return new Date(this.#updatedAt);
+    }
 
     get totalNutrients() {
         return this.#entries.reduce(
@@ -52,7 +73,7 @@ export class MealPlan {
                             carbs: dayAcc.carbs + mealNutrients.carbs
                         };
                     },
-                    { calories: 0, protein: 0, fat: 0, carbs: 0 }
+                    {calories: 0, protein: 0, fat: 0, carbs: 0}
                 );
 
                 return {
@@ -62,7 +83,7 @@ export class MealPlan {
                     carbs: acc.carbs + dayNutrients.carbs
                 };
             },
-            { calories: 0, protein: 0, fat: 0, carbs: 0 }
+            {calories: 0, protein: 0, fat: 0, carbs: 0}
         );
     }
 
@@ -71,11 +92,12 @@ export class MealPlan {
 
         let entry = this.#entries.find(e => e.day === day);
         if (!entry) {
-            entry = { day, meals: [] };
+            entry = {day, meals: []};
             this.#entries.push(entry);
         }
 
         entry.meals.push(meal);
+        this.#touch();
     }
 
     removeMealFromDay(day, mealId) {
@@ -83,10 +105,12 @@ export class MealPlan {
         if (entry) {
             entry.meals = entry.meals.filter(m => m.id !== mealId);
         }
+        this.#touch();
     }
 
     changeTitle(newTitle) {
         this.#title = this.#validateTitle(newTitle);
+        this.#touch();
     }
 
     #validateUserId(userId) {
@@ -104,5 +128,18 @@ export class MealPlan {
     #validateEntries(entries) {
         if (!Array.isArray(entries)) return [];
         return entries;
+    }
+
+    toJSON() {
+        return {
+            id: this.#id,
+            userId: this.#userId,
+            title: this.#title,
+            entries: this.#entries.map(e => ({
+                day: e.day,
+                meals: e.meals.map(m => m.toJSON ? m.toJSON() : m),
+            })),
+            totalNutrients: this.totalNutrients
+        };
     }
 }

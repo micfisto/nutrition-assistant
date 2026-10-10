@@ -61,6 +61,7 @@ export class UserProfile {
                    }) {
         if (!id)
             throw new DomainError(UserProfileErrors.ProfileIdEmpty);
+
         return new UserProfile(id, userId, birthDate, weight, height, activityLevel, goal, allergenIds, favoriteRecipeIds, updatedAt);
     }
 
@@ -145,7 +146,7 @@ export class UserProfile {
     }
 
     addAllergen(allergenId) {
-        if (!this.#allergenIds.includes(allergenId)){
+        if (!this.#allergenIds.includes(allergenId)) {
             this.#allergenIds.push(allergenId);
             this.#touch();
         }
@@ -157,7 +158,7 @@ export class UserProfile {
     }
 
     addFavoriteRecipe(favoriteRecipeId) {
-        if(!this.#favoriteRecipeIds.includes(favoriteRecipeId)){
+        if (!this.#favoriteRecipeIds.includes(favoriteRecipeId)) {
             this.#favoriteRecipeIds.push(favoriteRecipeId);
             this.#touch();
         }
@@ -203,5 +204,20 @@ export class UserProfile {
         if (typeof height !== 'number' || height < 100 || height > 250)
             throw new DomainError(UserProfileErrors.InvalidHeight);
         return height;
+    }
+
+    toJSON() {
+        return {
+            id: this.#id,
+            userId: this.#userId,
+            birthDate: this.#birthDate,
+            weight: this.#weight,
+            height: this.#height,
+            activityLevel: this.#activityLevel,
+            goal: this.#goal,
+            allergenIds: this.#allergenIds,
+            favoriteRecipeIds: this.#favoriteRecipeIds,
+            updatedAt: this.#updatedAt
+        };
     }
 }

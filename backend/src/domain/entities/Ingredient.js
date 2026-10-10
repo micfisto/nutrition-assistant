@@ -103,4 +103,16 @@ export class Ingredient {
             collapseSpaces: true
         });
     }
+
+    toJSON(){
+        return {
+            id: this.#id,
+            name: this.#name,
+            caloriesPer100g: this.#caloriesPer100g,
+            proteinsPer100g: this.#proteinsPer100g,
+            fatsPer100g: this.#fatsPer100g,
+            carbsPer100g: this.#carbsPer100g,
+            updatedAt: this.#updatedAt
+        };
+    }
 }

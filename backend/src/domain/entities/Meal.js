@@ -6,18 +6,20 @@ export class Meal {
     #id;
     #name;
     #items;
+    #updatedAt;
 
-    constructor(id = crypto.randomUUID(), name, items = []) {
+    constructor(id = crypto.randomUUID(), name, items = [], updatedAt = null) {
         this.#id = id;
         this.#name = this.#validateName(name);
         this.#items = this.#validateItems(items);
+        this.#updatedAt = updatedAt ? new Date(updatedAt) : new Date();
     }
 
     static create({name, items = []}) {
         return new Meal(crypto.randomUUID(), name, items);
     }
 
-    static restore({id, name, items}) {
+    static restore({id, name, items, updatedAt}) {
         if (!id)
             throw new DomainError(MealErrors.IdRequired);
 
@@ -28,7 +30,11 @@ export class Meal {
             }))
             : [];
 
-        return new Meal(id, name, restoredItems);
+        return new Meal(id, name, restoredItems, updatedAt);
+    }
+
+    #touch() {
+        this.#updatedAt = new Date();
     }
 
     get id() {
@@ -41,6 +47,10 @@ export class Meal {
 
     get items() {
         return [...this.#items];
+    }
+
+    get updatedAt() {
+        return new Date(this.#updatedAt);
     }
 
     get totalNutrients() {
@@ -63,14 +73,17 @@ export class Meal {
         if (typeof servings !== 'number' || servings <= 0) throw new DomainError(MealErrors.InvalidServings);
 
         this.#items.push({recipe, servings});
+        this.#touch();
     }
 
     removeRecipe(recipeId) {
         this.#items = this.#items.filter(item => item.recipe.id !== recipeId);
+        this.#touch();
     }
 
     changeName(newName) {
         this.#name = this.#validateName(newName);
+        this.#touch();
     }
 
     #validateName(name) {
@@ -83,5 +96,17 @@ export class Meal {
     #validateItems(items) {
         if (!Array.isArray(items)) return [];
         return items;
+    }
+
+    toJSON() {
+        return {
+            id: this.#id,
+            name: this.#name,
+            items: this.#items.map(i => ({
+                recipe: i.recipe.toJSON ? i.recipe.toJSON() : i.recipe,
+                servings: i.servings
+            })),
+            totalNutrients: this.totalNutrients
+        }
     }
 }

@@ -213,4 +213,18 @@ export class User {
 
         return passwordHash;
     }
+
+    toJSON() {
+        return {
+            id: this.#id,
+            login: this.#login,
+            username: this.#username,
+            email: this.#email,
+            passwordHash: this.#passwordHash,
+            role: this.#role,
+            status: this.#status,
+            deactivatedAt: this.#deactivatedAt,
+            updatedAt: this.#updatedAt
+        };
+    }
 }
