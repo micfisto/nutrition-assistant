@@ -2,17 +2,10 @@ import { DomainError } from "../errors/DomainError.js";
 import { MealPlanErrors } from "../errors/MealPlanErrors.js";
 import { Meal } from "./Meal.js";
 
-/**
- * @typedef {Object} PlanEntry
- * @property {string} day - День недели или дата (e.g., "Monday" или "2026-10-08")
- * @property {Meal[]} meals - Список приемов пищи в этот день
- */
-
 export class MealPlan {
     #id;
     #userId;
     #title;
-    /** @type {PlanEntry[]} */
     #entries;
 
     constructor(id = crypto.randomUUID(), userId, title, entries = []) {
@@ -22,16 +15,10 @@ export class MealPlan {
         this.#entries = this.#validateEntries(entries);
     }
 
-    /**
-     * @param {{ userId: string, title: string, entries?: PlanEntry[] }} data
-     */
     static create({ userId, title, entries = [] }) {
         return new MealPlan(crypto.randomUUID(), userId, title, entries);
     }
-
-    /**
-     * @param {{ id: string, userId: string, title: string, entries?: PlanEntry[] }} data
-     */
+    
     static restore({ id, userId, title, entries }) {
         if (!id) throw new DomainError(MealPlanErrors.IdRequired);
 
