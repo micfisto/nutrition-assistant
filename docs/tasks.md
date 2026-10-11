@@ -8,7 +8,17 @@
 
 - [x] [Back] Созданы энумы (`ActivityLevel`, `GoalType`, `UserRole`, `UserStatus`) и ошибки.
 
-- [x] [Back] Создан UserService, UserRepository
+- [x] [Back] Создан UserService, UserRepository (фабрика InMemory / ORM).
+
+- [x] [Back] Реализованы OrmUserRepository и InMemoryUserRepository.
+
+- [x] [Back] Реализован UserMapper для преобразования доменных сущностей в persistence-объекты и обратно.
+
+- [x] [Back] Настроена Prisma-схема (UserEntity, UserProfileEntity) и PrismaClient.
+
+- [x] [Back] Настроен prisma.config.ts для CLI.
+
+- [x] [DevOps] Обновлена структура проекта в `docs/project-structure.md`.
 
 - [ ] [Back] Настройка контроллов
 
@@ -30,8 +40,6 @@
 
 **Фокус:** _Модуль AI-чата (DDD-слой, интеграция с LLM, сохранность истории и UI)_
 
-
-
 - [ ] [Back/Domain] Создание доменной сущности `ChatMessage.js` / `ChatSession.js` и ошибок `ChatErrors.js`.
 
 - [ ] [Back/Infra] Реализация `chatRepository.js` для работы с историей сообщений в Supabase.
@@ -50,7 +58,7 @@
 
 **Фокус:** _Алгоритм генерации дефолтного меню, сортировка рецептов, сетка 1–4 недель_
 
-- [ ] [Back] `RecipeRepository` и `MealPlanRepository`.
+- [ ] [Back] `RecipeRepository` и `MealPlanRepository`, `RecipeService` и `MealPlanService`.
 
 - [ ] [Back] Эндпоинт каталога рецептов с фильтрацией (по аллергенам, типам приема пищи) и **сортировкой по КБЖУ** (`sortBy=calories|proteins|fats|carbs`, `order=asc|desc`).
 
@@ -71,16 +79,16 @@
 
 - [ ] [Front] Клиентский калькулятор КБЖУ: расчет BMR, TDEE и итоговой суточной нормы с учетом выбранной цели (похудение/набор/сохранение) прямо на фронтенде.
 
-- [ ] [Back] Сервис генерации дефолтного суточного меню под полученную от фронтенда цифру калорий (`targetCalories`).
-
 - [ ] [Front] Отправка рассчитанных значений КБЖУ в профиль пользователя на бэкенд.
 
-- [ ] [Front] Верстка и клиентская валидация страниц `LoginPage` и `RegisterPage`.
+- [ ] [Back] Сервис генерации дефолтного суточного меню под полученную от фронтенда цифру калорий (`targetCalories`).
 
-- [ ] [Front] UI-компонент выбора аллергенов и пищевых ограничений.
+- [ ] [Front] Верстка и клиентская валидация страниц `LoginPage` и `RegisterPage`.
 
 - [ ] [Front] Личный кабинет (Dashboard): отображение целевых норм КБЖУ, избранных рецептов и прошлых планов.
 
 - [ ] [Back] API для добавления/удаления рецептов в «Избранное» (`/api/v1/favorites`).
+
+- [ ] [Front] UI-компонент выбора аллергенов и пищевых ограничений.
 
 - [ ] [БД] Первичное наполнение Supabase рецептами, ингредиентами, их КБЖУ и тегами приемов пищи.

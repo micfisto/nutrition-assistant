@@ -4,13 +4,23 @@
 nutrition-assistant/                  
 ├── backend/                          
 │   ├── src/                          # Исходный код сервера
-│   │   ├── config/                   # Конфигурация (Supabase и т.д.)
-│   │   ├── controllers/              # Обработчики запросов
-│   │   ├── middlewares/              # JWT, логирование, ошибки
-│   │   ├── models/                   # Работа с базой данных
-│   │   ├── routes/                   # Маршруты API
-│   │   ├── services/                 # Бизнес-логика
-│   │   └── app.js                    # Точка входа сервера
+│   │   ├── app.js                    # Точка входа сервера
+│   │   ├── services/                 # Бизнес-логика (UserService, UserProfileService)
+│   │   ├── domain/                   # Доменные сущности, ошибки, перечисления, хелперы
+│   │   │   ├── entities/             # Сущности (User, Ingredient, Recipe)
+│   │   │   ├── enums/                # Перечисления (ActivityLevel, GoalType, UserRole)
+│   │   │   ├── errors/               # Ошибки (AppError, DomainError, InfrastructureError, UserErrors, IngredientErrors)
+│   │   │   └── helpers/              # Утилиты (Validator)
+│   │   ├── infrastructure/           # Инфраструктурный слой
+│   │   │   ├── mappers/              # Мапперы домен ↔ persistence (UserMapper)
+│   │   │   ├── orm/                  # ORM-клиент (PrismaClient)
+│   │   │   └── repositories/         # Репозитории
+│   │   │       ├── UserRepository.js  # Фабрика выбора драйвера (InMemory / ORM)
+│   │   │       ├── InMemoryRepositories/  # InMemoryUserRepository
+│   │   │       └── OrmRepositories/       # OrmUserRepository
+│   │   └── api/                      # Контроллеры (userControllers)
+│   ├── prisma/                       # Prisma-схема (schema.prisma)
+│   ├── prisma7.config.ts             # Конфиг Prisma CLI
 │   ├── .env.example                  # Шаблон переменных окружения
 │   └── package.json                  # Зависимости бэкенда
 │
