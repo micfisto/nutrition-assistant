@@ -1,0 +1,38 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model UserEntity {
+  id            String       @id @default(uuid())
+  login         String       @unique
+  username      String
+  email         String       @unique
+  passwordHash  String       @map("password_hash")
+  role          String       @default("USER")
+  status        String       @default("ACTIVE")
+  deactivatedAt DateTime?    @map("deactivated_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  profile       UserProfileEntity? // Связь один к одному
+
+  @@map("users")
+}
+
+model UserProfileEntity {
+  id                String      @id @default(uuid())
+  userId            String      @unique @map("user_id")
+  user              UserEntity  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  birthDate         DateTime    @map("birth_date")
+  weight            Float
+  height            Float
+  activityLevel     String      @map("activity_level")
+  goal              String
+  allergenIds       String[]    @map("allergen_ids")
+  favoriteRecipeIds String[]    @map("favorite_recipe_ids")
+  updatedAt         DateTime    @updatedAt @map("updated_at")
+
+  @@map("user_profiles")
+}
