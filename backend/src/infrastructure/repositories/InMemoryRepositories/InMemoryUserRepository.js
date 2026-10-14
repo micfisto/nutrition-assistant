@@ -17,6 +17,15 @@ export class InMemoryUserRepository {
         return null;
     }
 
+    async findByLogin(login) {
+        for (const rawUser of this.#users.values()){
+            if(rawUser.login === login){
+                return UserMapper.toDomain(rawUser);
+            }
+        }
+        return null;
+    }
+
     async save(user) {
         const data = UserMapper.toPersistence(user);
         this.#users.set(data.id, data);

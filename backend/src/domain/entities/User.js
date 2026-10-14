@@ -26,13 +26,13 @@ export class User {
         this.#username = this.#validateUsername(username);
         this.#email = this.#validateEmail(email);
         this.#passwordHash = this.#validatePasswordHash(passwordHash);
-        this.#role = role;
+        this.#role = this.#validateRole(role);
 
         const parsedDeactivatedAt = deactivatedAt ? new Date(deactivatedAt) : null;
         if (status === UserStatus.DEACTIVATED && !parsedDeactivatedAt)
             throw new DomainError(UserErrors.NotRecoverable);
 
-        this.#status = status;
+        this.#status = this.#validateStatus(status);
         this.#deactivatedAt = parsedDeactivatedAt;
         this.#updatedAt = updatedAt ? new Date(updatedAt) : new Date();
     }
@@ -108,6 +108,12 @@ export class User {
     changeUsername(newUsername) {
         this.#ensureIsActive();
         this.#username = this.#validateUsername(newUsername);
+        this.#touch();
+    }
+
+    changeRole(newRole) {
+        this.#ensureIsActive();
+        this.#role = this.#validateRole(newRole);
         this.#touch();
     }
 
@@ -212,6 +218,19 @@ export class User {
             throw new DomainError(UserErrors.PasswordEmpty);
 
         return passwordHash;
+    }
+
+    #validateStatus(status) {
+        if (!UserStatus.isValid(status))
+            throw new DomainError(UserErrors.InvalidStatus);
+
+        return status;
+    }
+
+    #validateRole(role) {
+        if (!UserRole.isValid(role))
+            throw new DomainError(UserErrors.InvalidRole);
+        return role;
     }
 
     toJSON() {

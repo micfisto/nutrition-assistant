@@ -20,4 +20,12 @@ export class UserErrors {
     static NotRecoverable = 'USER_NOT_RECOVERABLE';
     static AlreadyDeleted = 'USER_ALREADY_DELETED';
     static IdRequired = 'USER_ID_REQUIRED';
+
+    static EmailAlreadyExists = 'USER_EMAIL_ALREADY_EXISTS';
+    static LoginAlreadyExists = 'USER_LOGIN_ALREADY_EXISTS';
+
+    static NotFound = 'USER_NOT_FOUND';
+
+    static InvalidStatus = 'USER_INVALID_STATUS';
+    static InvalidRole = 'INVALID_ROLE';
 }
