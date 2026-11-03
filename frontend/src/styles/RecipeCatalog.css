@@ -1,0 +1,11 @@
+.recipe-catalog__controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.recipe-catalog__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
