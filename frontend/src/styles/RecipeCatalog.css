@@ -1,11 +1,25 @@
 .recipe-catalog__controls {
   display: flex;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.recipe-catalog__controls select {
+  padding: 10px 14px;
+  border: 1px solid var(--grullo);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--raisin);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.recipe-catalog__controls select:focus {
+  outline: 2px solid var(--green);
 }
 
 .recipe-catalog__list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 16px;
+  gap: 20px;
 }

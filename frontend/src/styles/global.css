@@ -1,0 +1,22 @@
+:root {
+  --garnet: #792e29;
+  --garnet-dark: #5e211d;
+  --raisin: #24201d;
+  --olive: #565538;
+  --green: #6f8f3a;
+  --grullo: #aba38f;
+  --timber: #d9d4c8;
+  --bg: #f4f1ea;
+  --card: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--raisin);
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+}
