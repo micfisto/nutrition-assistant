@@ -4,9 +4,47 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nutrition Assistant</title>
+    <link rel="stylesheet" href="/src/styles/global.css" />
+    <link rel="stylesheet" href="/src/styles/DaysTabs.css" />
+    <link rel="stylesheet" href="/src/styles/RecipeCard.css" />
+    <link rel="stylesheet" href="/src/styles/RecipeCatalog.css" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <div style="max-width: 1100px; margin: 0 auto; padding: 40px 20px">
+      <h1
+        style="
+          text-align: center;
+          margin: 0 0 24px;
+          font-size: 32px;
+          color: var(--garnet);
+        "
+      >
+        Nutrition Assistant
+      </h1>
+
+      <div id="days-tabs" class="days-tabs-container"></div>
+
+      <h2 id="day-title" style="margin: 32px 0 16px; font-size: 22px"></h2>
+
+      <section class="recipe-catalog">
+        <div class="recipe-catalog__controls">
+          <select id="sort-by">
+            <option value="">Без сортировки</option>
+            <option value="calories">Калории</option>
+            <option value="proteins">Белки</option>
+            <option value="fats">Жиры</option>
+            <option value="carbs">Углеводы</option>
+          </select>
+          <select id="sort-order">
+            <option value="asc">По возрастанию</option>
+            <option value="desc">По убыванию</option>
+          </select>
+        </div>
+        <p id="status"></p>
+        <div id="recipe-list" class="recipe-catalog__list"></div>
+      </section>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>
