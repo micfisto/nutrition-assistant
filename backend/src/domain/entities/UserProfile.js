@@ -11,7 +11,7 @@ export class UserProfile {
     #height;
     #activityLevel;
     #goal;
-    #allergenIds
+    #allergenIds;
     /** IngredientIds []*/
     #favoriteRecipeIds;
     /** RecipeIds []*/

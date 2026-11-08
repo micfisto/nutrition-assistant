@@ -1,5 +1,6 @@
 export class UserProfileErrors{
     static ProfileUserIdEmpty = 'PROFILE_USER_ID_EMPTY';
+    static ProfileNotFound = 'PROFILE_NOT_FOUND';
 
     static InvalidBirthDate = 'PROFILE_INVALID_BIRTH_DATE';
     static BirthDateInFuture = 'PROFILE_BIRTH_DATE_IN_FUTURE';
