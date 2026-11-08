@@ -16,7 +16,7 @@ model UserEntity {
   status        String       @default("ACTIVE")
   deactivatedAt DateTime?    @map("deactivated_at")
   updatedAt     DateTime     @updatedAt @map("updated_at")
-  profile       UserProfileEntity? // Связь один к одному
+  profile       UserProfileEntity?
 
   @@map("users")
 }
@@ -35,4 +35,29 @@ model UserProfileEntity {
   updatedAt         DateTime    @updatedAt @map("updated_at")
 
   @@map("user_profiles")
+}
+
+model IngredientEntity {
+  id               String  @id @default(uuid())
+  name             String
+  caloriesPer100g  Float   @map("calories_per_100g")
+  proteinsPer100g  Float   @map("proteins_per_100g")
+  fatsPer100g      Float   @map("fats_per_100g")
+  carbsPer100g     Float   @map("carbs_per_100g")
+
+  @@map("ingredients")
+}
+
+model RecipeEntity {
+  id             String   @id @default(uuid())
+  title          String
+  description    String?
+  servings       Float
+  ingredients    Json
+  imageUrl       String?  @map("image_url")
+  mealTypes      String[] @map("meal_types")
+  cookingMethod  String?  @map("cooking_method")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@map("recipes")
 }
