@@ -1,0 +1,39 @@
+<div class="auth-module" id="login-module">
+  <h1>Вход</h1>
+  
+  <form id="login-form">
+    <div>
+      <label for="loginOrEmail">Логин или Email *</label>
+      <input 
+        type="text" 
+        id="loginOrEmail" 
+        name="loginOrEmail" 
+        placeholder="Введите логин или email"
+        required
+      />
+      <span class="error-message" id="loginOrEmail-error"></span>
+    </div>
+
+    <div>
+      <label for="password">Пароль *</label>
+      <input 
+        type="password" 
+        id="password" 
+        name="password" 
+        placeholder="Введите пароль"
+        required
+      />
+      <span class="error-message" id="password-error"></span>
+    </div>
+
+    <button type="submit" id="submit-btn">
+      Войти
+    </button>
+
+    <p>
+      Нет аккаунта? <a href="/register.html">Зарегистрироваться</a>
+    </p>
+  </form>
+</div>
+
+<script type="module" src="/src/pages/login.js"></script>
