@@ -81,8 +81,13 @@ export class UserService {
         await this.#saveUser(user);
     }
 
-    async validateUserForLogin(login) {
-        const user = await userRepository.findByLogin(login);
+    async validateUserForLogin(loginOrEmail) {
+        let user = await userRepository.findByLogin(loginOrEmail);
+        
+        if (!user) {
+            user = await userRepository.findByEmail(loginOrEmail);
+        }
+
         if (!user) {
             throw new DomainError(UserErrors.NotFound);
         }

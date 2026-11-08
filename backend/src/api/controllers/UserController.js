@@ -6,12 +6,25 @@ import { userRepository } from '../../infrastructure/repositories/userRepository
 import { DomainError } from '../../domain/errors/DomainError.js';
 
 const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '24h' });
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || '24h' });
 };
 
 export async function register(req, res, next) {
   try {
     const { login, username, email, password, birthDate, weight, height, activityLevel, goal, allergenIds } = req.body;
+
+    if (!login || !username || !email || !password) {
+      throw new DomainError('USER_LOGIN_EMPTY');
+    }
+
+    if (!password || password.length < 6) {
+      throw new DomainError('USER_PASSWORD_TOO_SHORT');
+    }
+
+    if (!birthDate || !weight || !height) {
+      throw new DomainError('PROFILE_INVALID_BIRTH_DATE');
+    }
+
     const passwordHash = await bcrypt.hash(password, 10);
 
     const user = await userService.registerUser({
@@ -41,9 +54,13 @@ export async function register(req, res, next) {
 
 export async function login(req, res, next) {
   try {
-    const { login, password } = req.body;
+    const { loginOrEmail, password } = req.body;
 
-    const user = await userService.validateUserForLogin(login);
+    if (!loginOrEmail || !password) {
+      throw new DomainError('INVALID_CREDENTIALS');
+    }
+
+    const user = await userService.validateUserForLogin(loginOrEmail);
     const userData = user.toJSON();
 
     const isMatch = await bcrypt.compare(password, userData.passwordHash);
