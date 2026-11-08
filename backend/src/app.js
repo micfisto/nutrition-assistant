@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import { recipeRouter } from "./api/routes/recipeRoutes.js";
 import { authRouter } from "./api/routes/authRoutes.js";
+import { errorHandler } from "./infrastructure/middlewares/errorHandler.js";
 
 const app = express();
 
@@ -11,6 +12,8 @@ app.use(express.json());
 
 app.use("/api/v1/recipes", recipeRouter);
 app.use("/api/v1/auth", authRouter);
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
