@@ -49,6 +49,7 @@ body {
   backdrop-filter: blur(12px);
 }
 
+/* ===== Логотип ===== */
 .logo {
   display: flex;
   align-items: center;
@@ -60,11 +61,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background: var(--green-light);
-  font-size: 22px;
+  font-size: 26px;
   transition: transform 0.3s;
 }
 .logo:hover .logo__mark {
@@ -72,7 +73,7 @@ body {
 }
 .logo__text {
   font-family: var(--font-head);
-  font-size: 17px;
+  font-size: 22px;
   font-weight: 800;
   letter-spacing: 0.5px;
 }
@@ -83,6 +84,7 @@ body {
   background: rgba(255, 255, 255, 0.15);
 }
 
+/* ===== Навигация ===== */
 .nav {
   display: flex;
   align-items: center;
@@ -95,6 +97,7 @@ body {
   text-decoration: none;
   transition: color 0.2s;
 }
+
 .nav a:not(.nav__login) {
   position: relative;
   padding: 6px 0;
@@ -465,6 +468,9 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     gap: 8px 16px;
+  }
+  .logo__text {
+    font-size: 19px;
   }
 
   .banner {
