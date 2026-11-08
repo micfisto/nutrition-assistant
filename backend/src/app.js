@@ -5,6 +5,7 @@ import { recipeRouter } from "./api/routes/recipeRoutes.js";
 import { authRouter } from "./api/routes/authRoutes.js";
 import { ingredientRouter } from "./api/routes/ingredientRoutes.js";
 import { errorHandler } from "./infrastructure/middlewares/errorHandler.js";
+import { profileRouter } from "./api/routes/profileRoutes.js";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use("/api/v1/recipes", recipeRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/ingredients", ingredientRouter);
+app.use("/api/v1/profile", profileRouter);
 
 app.use(errorHandler);
 
