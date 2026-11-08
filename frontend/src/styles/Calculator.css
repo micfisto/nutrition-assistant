@@ -222,3 +222,11 @@
     font-size: 13px;
   }
 }
+
+@supports (appearance: base-select) {
+  .field select {
+    appearance: base-select;
+    padding: 12px 14px;
+    background-image: none;
+  }
+}
