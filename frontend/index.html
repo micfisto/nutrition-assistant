@@ -4,46 +4,86 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nutrition Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="/src/styles/global.css" />
     <link rel="stylesheet" href="/src/styles/DaysTabs.css" />
     <link rel="stylesheet" href="/src/styles/RecipeCard.css" />
     <link rel="stylesheet" href="/src/styles/RecipeCatalog.css" />
+    <link rel="stylesheet" href="/src/styles/RecipeModal.css" />
     <link rel="stylesheet" href="/src/styles/main-layout.css" />
+    <link rel="stylesheet" href="/src/styles/plan.css" />
   </head>
-  <body>
+  <body id="top">
     <div class="page">
       <header class="site-header" id="header">
-        <a class="logo" href="#header">Nutrition Assistant</a>
+        <a class="logo" href="#top">
+          <span class="logo__mark">🥗</span>
+          <span class="logo__text">Nutrition Assistant</span>
+        </a>
         <nav class="nav">
-          <a href="#calculator">Калькулятор</a>
+          <a href="#calculator">Подбор рациона</a>
           <a href="#goals">Цели</a>
-          <a href="#menu">Меню</a>
+          <a href="#menu">Рецепты</a>
+          <a class="nav__login" href="#">Войти</a>
         </nav>
       </header>
 
       <section class="banner" id="banner">
+        <span class="banner__tag">Персональное питание</span>
         <h1>Питание под вашу цель</h1>
-        <p>Рассчитайте норму калорий и составьте меню на неделю</p>
-        <a class="banner__button" href="#menu">Подобрать меню</a>
+        <p>
+          Рассчитайте норму калорий и соберите меню на несколько недель вперёд
+        </p>
+        <a class="btn btn--light" href="#menu">Собрать меню</a>
+        <ul class="banner__stats">
+          <li><b>до 4</b><span>недель</span></li>
+          <li><b>КБЖУ</b><span>на лету</span></li>
+          <li><b>Меню</b><span>сохраняется</span></li>
+        </ul>
       </section>
 
-      <section class="block" id="calculator">
+      <section class="slot" id="calculator">
+        <span class="slot__icon">🧮</span>
         <h2>Калькулятор КБЖУ</h2>
-        <p class="placeholder">Здесь будет калькулятор</p>
+        <p>Раздел скоро появится</p>
       </section>
 
-      <section class="block" id="goals">
+      <section class="slot" id="goals">
+        <span class="slot__icon">🎯</span>
         <h2>Выбор цели</h2>
-        <p class="placeholder">Здесь будет слайдер целей</p>
+        <p>Раздел скоро появится</p>
       </section>
 
-      <section class="block" id="menu">
+      <section class="menu-block" id="menu">
+        <h2>Собери рацион</h2>
         <div id="days-tabs" class="days-tabs-container"></div>
 
-        <h2 id="day-title" class="day-title"></h2>
+        <div class="menu-layout">
+          <div class="menu-main">
+            <div class="day-head">
+              <h3 id="day-title"></h3>
+              <span id="day-count" class="day-count"></span>
+            </div>
 
-        <div class="recipe-catalog">
-          <div class="recipe-catalog__controls">
+            <div id="replace-bar" class="replace-bar" hidden>
+              <span>Выберите блюдо из каталога для замены</span>
+              <button id="replace-cancel" type="button">Отмена</button>
+            </div>
+
+            <ul id="day-plan" class="day-plan"></ul>
+
+            <h3 class="catalog-title">Каталог блюд</h3>
+            <p id="status"></p>
+            <div id="recipe-list" class="recipe-catalog__list"></div>
+          </div>
+
+          <aside class="menu-side">
+            <p class="side-label">Сортировка каталога</p>
             <select id="sort-by">
               <option value="">Без сортировки</option>
               <option value="calories">Калории</option>
@@ -55,20 +95,65 @@
               <option value="asc">По возрастанию</option>
               <option value="desc">По убыванию</option>
             </select>
-          </div>
-          <p id="status"></p>
-          <div id="recipe-list" class="recipe-catalog__list"></div>
+
+            <div class="day-total">
+              <p class="side-label">Итого за день</p>
+              <b id="total-kcal">0 ккал</b>
+              <span id="total-macros">Б 0 · Ж 0 · У 0</span>
+
+              <div class="norm-bar">
+                <div id="norm-fill" class="norm-bar__fill"></div>
+              </div>
+              <span id="norm-text" class="norm-text"></span>
+            </div>
+
+            <label class="norm-field">
+              Норма, ккал в день
+              <input
+                id="norm-input"
+                type="number"
+                min="800"
+                max="6000"
+                step="50"
+              />
+            </label>
+
+            <button id="save-btn" class="btn btn--wide" type="button">
+              Сохранить меню
+            </button>
+            <p id="save-note" class="save-note"></p>
+          </aside>
         </div>
       </section>
 
       <footer class="site-footer" id="footer">
-        <p>Nutrition Assistant, 2026</p>
-        <nav class="nav">
-          <a href="#header">Наверх</a>
-        </nav>
+        <div class="footer__brand">
+          <a class="logo logo--light" href="#top">
+            <span class="logo__mark">🥗</span>
+            <span class="logo__text">Nutrition Assistant</span>
+          </a>
+          <p>
+            Персональный рацион под вашу цель: от расчёта нормы до меню на
+            неделю.
+          </p>
+        </div>
+        <div class="footer__col">
+          <h4>Разделы</h4>
+          <a href="#calculator">Калькулятор</a>
+          <a href="#goals">Цели</a>
+          <a href="#menu">Рецепты</a>
+        </div>
+        <div class="footer__col">
+          <h4>Проект</h4>
+          <a href="#">О проекте</a>
+          <a href="#">Войти</a>
+          <a href="#top">Наверх ↑</a>
+        </div>
+        <p class="footer__copy">© 2026 Nutrition Assistant</p>
       </footer>
     </div>
 
     <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/ui.js"></script>
   </body>
 </html>

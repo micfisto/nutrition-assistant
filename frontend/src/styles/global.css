@@ -1,13 +1,18 @@
 :root {
-  --garnet: #792e29;
-  --garnet-dark: #5e211d;
-  --raisin: #24201d;
-  --olive: #565538;
-  --green: #6f8f3a;
-  --grullo: #aba38f;
-  --timber: #d9d4c8;
-  --bg: #f4f1ea;
+  --garnet: #8a3b33;
+  --raisin: #1f2a20;
+  --olive: #5b6b52;
+  --green: #4e7a47;
+  --green-dark: #35592f;
+  --green-deep: #1f3a22;
+  --green-light: #e2eeda;
+  --grullo: #a9b79f;
+  --timber: #d8e2ce;
+  --bg: #e8f0e0;
   --card: #ffffff;
+  --shadow: 0 8px 28px rgba(31, 58, 34, 0.1);
+  --font-head: "Playfair Display", Georgia, serif;
+  --font-body: "Manrope", "Segoe UI", Arial, sans-serif;
 }
 
 * {
@@ -16,7 +21,22 @@
 
 body {
   margin: 0;
-  background: var(--bg);
   color: var(--raisin);
-  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-head);
+  font-weight: 700;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
 }

@@ -1,31 +1,54 @@
 .days-tabs-container {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   justify-content: center;
-  padding: 12px 16px;
-  background-color: #d9d4c8;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 6px;
+  background-color: var(--card);
+  border-radius: 999px;
+  box-shadow: 0 2px 12px rgba(36, 32, 29, 0.08);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.days-tabs-container::-webkit-scrollbar {
+  display: none;
 }
 
 .day-tab {
-  background-color: #aba38f;
-  color: #24201d;
+  flex: 1;
+  min-width: 52px;
+  background: transparent;
+  color: var(--olive);
   border: none;
-  border-radius: 8px;
+  border-radius: 999px;
   padding: 10px 18px;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    box-shadow 0.2s;
 }
 
 .day-tab:hover {
-  background-color: #9c9480;
+  background-color: var(--bg);
+  color: var(--raisin);
 }
 
 .day-tab.active {
-  background-color: #792e29;
-  color: #ffffff;
-  box-shadow: 0 2px 6px rgba(121, 46, 41, 0.35);
+  background-color: var(--garnet);
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(121, 46, 41, 0.35);
+}
+
+@media (max-width: 600px) {
+  .days-tabs-container {
+    justify-content: flex-start;
+  }
+
+  .day-tab {
+    flex: 0 0 auto;
+    padding: 9px 14px;
+  }
 }
