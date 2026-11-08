@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: nutrition-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - DB_DRIVER=memory
+      - JWT_SECRET=${JWT_SECRET:-temporary_secret_key}
+      - JWT_EXPIRES_IN=24h
+      - DATABASE_URL=${DATABASE_URL}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+    networks:
+      - nutrition-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: nutrition-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - nutrition-network
+    restart: unless-stopped
+
+networks:
+  nutrition-network:
+    driver: bridge
