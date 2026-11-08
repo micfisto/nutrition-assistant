@@ -24,6 +24,11 @@ export const errorMessages = {
   'PROFILE_INVALID_AGE': 'Возраст должен быть от 12 до 120 лет',
   'PROFILE_INVALID_WEIGHT': 'Вес должен быть от 30 до 300 кг',
   'PROFILE_INVALID_HEIGHT': 'Рост должен быть от 100 до 250 см',
+  'PROFILE_INVALID_ACTIVITY_LEVEL': 'Некорректный уровень активности',
+  'PROFILE_INVALID_GOAL': 'Некорректная цель питания',
+  'PROFILE_INVALID_ALLERGENS': 'Некорректный список аллергенов',
+  'PROFILE_INVALID_TARGETS': 'Некорректные значения норм КБЖУ',
+  'PROFILE_INVALID_EXCLUDED_FOODS': 'Список исключённых продуктов некорректен (каждое название от 2 до 40 символов)',
 
   // Recipe errors
   'RECIPE_ID_REQUIRED': 'ID рецепта обязателен',

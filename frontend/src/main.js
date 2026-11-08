@@ -13,9 +13,9 @@ const DAY_NAMES = {
   sun: "воскресенье",
 };
 
-//requireAuth();
-//displayUserInfo();
-//addLogoutHandler();
+requireAuth();
+displayUserInfo();
+addLogoutHandler();
 
 const state = { activeDay: "mon", sortBy: "", order: "asc" };
 
