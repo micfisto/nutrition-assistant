@@ -8,41 +8,65 @@
     <link rel="stylesheet" href="/src/styles/DaysTabs.css" />
     <link rel="stylesheet" href="/src/styles/RecipeCard.css" />
     <link rel="stylesheet" href="/src/styles/RecipeCatalog.css" />
+    <link rel="stylesheet" href="/src/styles/main-layout.css" />
   </head>
   <body>
-    <div style="max-width: 1100px; margin: 0 auto; padding: 40px 20px">
-      <h1
-        style="
-          text-align: center;
-          margin: 0 0 24px;
-          font-size: 32px;
-          color: var(--garnet);
-        "
-      >
-        Nutrition Assistant
-      </h1>
+    <div class="page">
+      <header class="site-header" id="header">
+        <a class="logo" href="#header">Nutrition Assistant</a>
+        <nav class="nav">
+          <a href="#calculator">Калькулятор</a>
+          <a href="#goals">Цели</a>
+          <a href="#menu">Меню</a>
+        </nav>
+      </header>
 
-      <div id="days-tabs" class="days-tabs-container"></div>
-
-      <h2 id="day-title" style="margin: 32px 0 16px; font-size: 22px"></h2>
-
-      <section class="recipe-catalog">
-        <div class="recipe-catalog__controls">
-          <select id="sort-by">
-            <option value="">Без сортировки</option>
-            <option value="calories">Калории</option>
-            <option value="proteins">Белки</option>
-            <option value="fats">Жиры</option>
-            <option value="carbs">Углеводы</option>
-          </select>
-          <select id="sort-order">
-            <option value="asc">По возрастанию</option>
-            <option value="desc">По убыванию</option>
-          </select>
-        </div>
-        <p id="status"></p>
-        <div id="recipe-list" class="recipe-catalog__list"></div>
+      <section class="banner" id="banner">
+        <h1>Питание под вашу цель</h1>
+        <p>Рассчитайте норму калорий и составьте меню на неделю</p>
+        <a class="banner__button" href="#menu">Подобрать меню</a>
       </section>
+
+      <section class="block" id="calculator">
+        <h2>Калькулятор КБЖУ</h2>
+        <p class="placeholder">Здесь будет калькулятор</p>
+      </section>
+
+      <section class="block" id="goals">
+        <h2>Выбор цели</h2>
+        <p class="placeholder">Здесь будет слайдер целей</p>
+      </section>
+
+      <section class="block" id="menu">
+        <div id="days-tabs" class="days-tabs-container"></div>
+
+        <h2 id="day-title" class="day-title"></h2>
+
+        <div class="recipe-catalog">
+          <div class="recipe-catalog__controls">
+            <select id="sort-by">
+              <option value="">Без сортировки</option>
+              <option value="calories">Калории</option>
+              <option value="proteins">Белки</option>
+              <option value="fats">Жиры</option>
+              <option value="carbs">Углеводы</option>
+            </select>
+            <select id="sort-order">
+              <option value="asc">По возрастанию</option>
+              <option value="desc">По убыванию</option>
+            </select>
+          </div>
+          <p id="status"></p>
+          <div id="recipe-list" class="recipe-catalog__list"></div>
+        </div>
+      </section>
+
+      <footer class="site-footer" id="footer">
+        <p>Nutrition Assistant, 2026</p>
+        <nav class="nav">
+          <a href="#header">Наверх</a>
+        </nav>
+      </footer>
     </div>
 
     <script type="module" src="/src/main.js"></script>

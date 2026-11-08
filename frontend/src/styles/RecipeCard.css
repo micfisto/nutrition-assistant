@@ -52,13 +52,13 @@
 }
 
 .recipe-card__macros {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
   gap: 6px;
   margin-top: 8px;
 }
 
 .recipe-card__macros span {
+  flex: 1;
   text-align: center;
   background: var(--bg);
   border-radius: 8px;
