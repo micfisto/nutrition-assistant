@@ -60,6 +60,10 @@ export class UserProfileService {
       draft.changeAllergens(updates.allergenIds);
     }
 
+        if (updates.excludedFoods !== undefined) {
+      draft.changeExcludedFoods(updates.excludedFoods);
+    }
+
     const targets = {};
     if (updates.targetCalories !== undefined) targets.calories = updates.targetCalories;
     if (updates.targetProteins !== undefined) targets.proteins = updates.targetProteins;

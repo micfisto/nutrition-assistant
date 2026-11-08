@@ -20,9 +20,10 @@ export class UserProfile {
     #targetProteins;
     #targetFats;
     #targetCarbs;
+    #excludedFoods;
     #updatedAt;
 
-    constructor(id, userId, birthDate, weight, height, activityLevel = ActivityLevel.MODERATE, goal = GoalType.MAINTAIN, allergenIds = [], favoriteRecipeIds = [], updatedAt = null, targets = {}) {
+    constructor(id, userId, birthDate, weight, height, activityLevel = ActivityLevel.MODERATE, goal = GoalType.MAINTAIN, allergenIds = [], favoriteRecipeIds = [], updatedAt = null, targets = {}, excludedFoods = []) {
         if (!userId)
             throw new DomainError(UserProfileErrors.ProfileUserIdEmpty);
 
@@ -39,6 +40,7 @@ export class UserProfile {
         this.#targetProteins = this.#validateTarget(targets.proteins, {min: 0, max: 1000});
         this.#targetFats = this.#validateTarget(targets.fats, {min: 0, max: 1000});
         this.#targetCarbs = this.#validateTarget(targets.carbs, {min: 0, max: 2000});
+        this.#excludedFoods = this.#validateExcludedFoods(excludedFoods);
         this.#updatedAt = updatedAt ? new Date(updatedAt) : new Date();
     }
 
@@ -54,7 +56,8 @@ export class UserProfile {
                       targetCalories = null,
                       targetProteins = null,
                       targetFats = null,
-                      targetCarbs = null
+                      targetCarbs = null,
+                      excludedFoods = []
                   }) {
         const id = crypto.randomUUID();
         return new UserProfile(id, userId, birthDate, weight, height, activityLevel, goal, allergenIds, favoriteRecipeIds, null, {
@@ -62,7 +65,7 @@ export class UserProfile {
             proteins: targetProteins,
             fats: targetFats,
             carbs: targetCarbs
-        });
+        }, excludedFoods);
     }
 
     static restore({
@@ -79,6 +82,7 @@ export class UserProfile {
                        targetProteins = null,
                        targetFats = null,
                        targetCarbs = null,
+                       excludedFoods = [],
                        updatedAt
                    }) {
         if (!id)
@@ -89,7 +93,7 @@ export class UserProfile {
             proteins: targetProteins,
             fats: targetFats,
             carbs: targetCarbs
-        });
+        }, excludedFoods);
     }
 
     get id() {
@@ -142,6 +146,10 @@ export class UserProfile {
 
     get targetCarbs() {
         return this.#targetCarbs;
+    }
+
+    get excludedFoods() {
+        return [...this.#excludedFoods];
     }
 
     get updatedAt() {
@@ -206,6 +214,11 @@ export class UserProfile {
             throw new DomainError(UserProfileErrors.InvalidAllergens);
 
         this.#allergenIds = [...new Set(allergenIds.map(id => id.trim()))];
+        this.#touch();
+    }
+
+    changeExcludedFoods(excludedFoods) {
+        this.#excludedFoods = this.#validateExcludedFoods(excludedFoods);
         this.#touch();
     }
 
@@ -284,6 +297,28 @@ export class UserProfile {
         return Validator.number(value, {min, max, errorKey: UserProfileErrors.InvalidTargets});
     }
 
+        #validateExcludedFoods(foods) {
+        if (foods === null || foods === undefined)
+            return [];
+
+        if (!Array.isArray(foods) || foods.length > 50)
+            throw new DomainError(UserProfileErrors.InvalidExcludedFoods);
+
+        const result = [];
+        for (const item of foods) {
+            if (typeof item !== 'string')
+                throw new DomainError(UserProfileErrors.InvalidExcludedFoods);
+
+            const word = item.trim().replace(/\s+/g, ' ');
+            if (word.length < 2 || word.length > 40)
+                throw new DomainError(UserProfileErrors.InvalidExcludedFoods);
+
+            if (!result.some(w => w.toLowerCase() === word.toLowerCase()))
+                result.push(word);
+        }
+        return result;
+    }
+
     toJSON() {
         return {
             id: this.#id,
@@ -299,6 +334,7 @@ export class UserProfile {
             targetProteins: this.#targetProteins,
             targetFats: this.#targetFats,
             targetCarbs: this.#targetCarbs,
+            excludedFoods: this.#excludedFoods,
             updatedAt: this.#updatedAt
         };
     }

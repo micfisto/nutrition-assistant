@@ -14,7 +14,7 @@ function handleError(res, err) {
 
 export async function getRecipes(req, res) {
   try {
-    const { sortBy, order, excludeIngredients } = req.query;
+    const { sortBy, order, excludeIngredients, excludeWords } = req.query;
 
     const recipes = await recipeService.getRecipes({
       sortBy,
@@ -22,6 +22,9 @@ export async function getRecipes(req, res) {
       excludeIngredientIds: excludeIngredients
         ? excludeIngredients.split(",")
         : [],
+      excludeWords: excludeWords
+        ? String(excludeWords).split(",").map((w) => w.trim()).filter(Boolean)
+        : [],  
     });
 
     res.json(recipes);

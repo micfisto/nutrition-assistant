@@ -9,6 +9,7 @@ const EDITABLE_FIELDS = [
   "activityLevel",
   "goal",
   "allergenIds",
+  "excludedFoods",
   "targetCalories",
   "targetProteins",
   "targetFats",

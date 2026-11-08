@@ -14,4 +14,5 @@ export class UserProfileErrors{
     static InvalidGoal = 'PROFILE_INVALID_GOAL';
     static InvalidAllergens = 'PROFILE_INVALID_ALLERGENS';
     static InvalidTargets = 'PROFILE_INVALID_TARGETS';
+    static InvalidExcludedFoods = 'PROFILE_INVALID_EXCLUDED_FOODS';
 }
