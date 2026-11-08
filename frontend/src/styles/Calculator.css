@@ -1,0 +1,224 @@
+/* секции калькулятора и цели  */
+.calc-section {
+  padding: 36px 44px;
+  border-radius: 32px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.calc-section h2 {
+  margin: 0 0 24px;
+  text-align: center;
+  font-size: 28px;
+}
+
+.calc-form,
+.calc-result,
+.goal-switch,
+.goal-switch__hint {
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.calc-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.calc-form__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+}
+
+.field {
+  display: flex;
+  flex: 1 1 220px;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.calc-form > .field {
+  flex: none;
+}
+
+.calc-form .btn {
+  margin-top: 6px;
+}
+
+.field__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--olive);
+}
+
+.field input[type="date"],
+.field input[type="number"],
+.field select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--timber);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--raisin);
+  font-size: 15px;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.field input::placeholder {
+  color: var(--grullo);
+}
+
+.field select {
+  padding-right: 42px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1.5l5 5 5-5' fill='none' stroke='%235b6b52' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+
+.field input:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px var(--green-light);
+}
+
+.field .is-invalid {
+  border-color: var(--garnet);
+  background: #fdf5f4;
+}
+
+.field .is-invalid:focus {
+  border-color: var(--garnet);
+  box-shadow: 0 0 0 3px #f6e6e3;
+}
+
+.field__error {
+  min-height: 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--garnet);
+}
+
+.calc-result {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 22px;
+  padding: 18px;
+  border-radius: 18px;
+  background: var(--green-light);
+}
+
+.calc-result[hidden] {
+  display: none;
+}
+
+.calc-result__kcal {
+  font-family: var(--font-head);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--garnet);
+}
+
+.calc-result__macros {
+  display: flex;
+  gap: 8px;
+}
+
+.calc-result__macros span {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 10px;
+  background: var(--card);
+  text-align: center;
+  font-weight: 700;
+  color: var(--green-dark);
+}
+
+.calc-result__note {
+  margin: 0;
+  font-size: 13px;
+  color: var(--olive);
+}
+
+.goal-switch {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--count), 1fr);
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--green-light);
+}
+
+.goal-switch__thumb {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc((100% - 8px) / var(--count));
+  border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 4px 10px rgba(78, 122, 71, 0.35);
+  transform: translateX(calc(var(--i, 0) * 100%));
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.goal-switch__item {
+  position: relative;
+  z-index: 1;
+  padding: 13px 8px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--olive);
+  cursor: pointer;
+  transition: color 0.25s;
+}
+
+.goal-switch__item:hover {
+  color: var(--green-dark);
+}
+
+.goal-switch__item[aria-checked="true"] {
+  color: #fff;
+}
+
+.goal-switch__item:focus-visible {
+  outline: 2px solid var(--green-dark);
+  outline-offset: 2px;
+}
+
+.goal-switch__hint {
+  min-height: 22px;
+  margin-top: 14px;
+  margin-bottom: 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--olive);
+}
+
+@media (max-width: 600px) {
+  .calc-section {
+    padding: 24px 16px;
+    border-radius: 24px;
+  }
+
+  .calc-section h2 {
+    font-size: 24px;
+  }
+
+  .goal-switch__item {
+    padding: 12px 4px;
+    font-size: 13px;
+  }
+}
