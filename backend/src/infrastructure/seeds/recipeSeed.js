@@ -22,7 +22,7 @@ const potato = ing("ing-potato", "Картофель", 77, 2, 0.1, 17);
 const yogurt = ing("ing-yogurt", "Йогурт натуральный", 59, 10, 0.4, 3.6);
 const banana = ing("ing-banana", "Банан", 89, 1.1, 0.3, 23);
 
-const recipe = (id, title, description, servings, items) =>
+const recipe = (id, title, description, servings, items, imageUrl = null, mealTypes = [], cookingMethod = null) =>
   Recipe.restore({
     id,
     title,
@@ -32,6 +32,9 @@ const recipe = (id, title, description, servings, items) =>
       ingredient,
       amountInGrams,
     })),
+    imageUrl,
+    mealTypes,
+    cookingMethod,
   });
 
 export const recipeSeed = [
@@ -39,11 +42,11 @@ export const recipeSeed = [
     [oats, 60],
     [milk, 200],
     [banana, 100],
-  ]),
+  ], null, ["breakfast"], "Варка"),
   recipe("rec-omelette", "Омлет", "Омлет с молоком", 1, [
     [egg, 150],
     [milk, 50],
-  ]),
+  ], null, ["breakfast"], "Жарка"),
   recipe(
     "rec-chicken-rice",
     "Курица с рисом и брокколи",
@@ -54,13 +57,16 @@ export const recipeSeed = [
       [rice, 200],
       [broccoli, 200],
     ],
+    null,
+    ["lunch", "dinner"],
+    "Запекание"
   ),
   recipe("rec-salmon", "Лосось с картофелем", "Запечённый лосось", 2, [
     [salmon, 200],
     [potato, 300],
-  ]),
+  ], null, ["dinner"], "Запекание"),
   recipe("rec-yogurt", "Йогурт с бананом", "Лёгкий перекус", 1, [
     [yogurt, 200],
     [banana, 100],
-  ]),
+  ], null, ["snack"], null),
 ];

@@ -10,11 +10,25 @@ export class RecipeMapper {
       description: raw.description,
       servings: raw.servings,
       ingredients: raw.ingredients,
-      updatedAt: raw.updatedAt,
+      imageUrl: raw.image_url || raw.imageUrl,
+      mealTypes: raw.meal_types || raw.mealTypes,
+      cookingMethod: raw.cooking_method || raw.cookingMethod,
+      updatedAt: raw.updated_at || raw.updatedAt,
     });
   }
 
   static toPersistence(recipe) {
-    return recipe.toJSON();
+    const json = recipe.toJSON();
+    return {
+      id: json.id,
+      title: json.title,
+      description: json.description,
+      servings: json.servings,
+      ingredients: json.ingredients,
+      image_url: json.imageUrl,
+      meal_types: json.mealTypes,
+      cooking_method: json.cookingMethod,
+      updated_at: json.updatedAt
+    };
   }
 }

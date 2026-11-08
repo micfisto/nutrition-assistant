@@ -9,22 +9,28 @@ export class Recipe {
     #description;
     #servings;
     #ingredients;
+    #imageUrl;
+    #mealTypes;
+    #cookingMethod;
     #updatedAt;
 
-    constructor(id = crypto.randomUUID(), title, description = '', servings = 1, ingredients = [], updatedAt = null) {
+    constructor(id = crypto.randomUUID(), title, description = '', servings = 1, ingredients = [], imageUrl = null, mealTypes = [], cookingMethod = null, updatedAt = null) {
         this.#id = id;
         this.#title = this.#validateTitle(title);
         this.#description = typeof description === 'string' ? description.trim() : '';
         this.#servings = this.#validateServings(servings);
         this.#ingredients = this.#validateIngredients(ingredients);
+        this.#imageUrl = this.#validateImageUrl(imageUrl);
+        this.#mealTypes = this.#validateMealTypes(mealTypes);
+        this.#cookingMethod = this.#validateCookingMethod(cookingMethod);
         this.#updatedAt = updatedAt ? new Date(updatedAt) : new Date();
     }
 
-    static create({title, description = '', servings = 1, ingredients = []}) {
-        return new Recipe(crypto.randomUUID(), title, description, servings, ingredients)
+    static create({title, description = '', servings = 1, ingredients = [], imageUrl = null, mealTypes = [], cookingMethod = null}) {
+        return new Recipe(crypto.randomUUID(), title, description, servings, ingredients, imageUrl, mealTypes, cookingMethod)
     }
 
-    static restore({id, title, description, servings, ingredients, updatedAt}) {
+    static restore({id, title, description, servings, ingredients, imageUrl, mealTypes, cookingMethod, updatedAt}) {
         if (!id)
             throw new DomainError(RecipeErrors.IdRequired);
 
@@ -36,7 +42,7 @@ export class Recipe {
                 amountInGrams: item.amountInGrams
             })) : [];
 
-        return new Recipe(id, title, description, servings, restoredIngredients, updatedAt)
+        return new Recipe(id, title, description, servings, restoredIngredients, imageUrl, mealTypes, cookingMethod, updatedAt)
     }
 
     get id() {
@@ -61,6 +67,18 @@ export class Recipe {
 
     get updatedAt() {
         return new Date(this.#updatedAt);
+    }
+
+    get imageUrl() {
+        return this.#imageUrl;
+    }
+
+    get mealTypes() {
+        return [...this.#mealTypes];
+    }
+
+    get cookingMethod() {
+        return this.#cookingMethod;
     }
 
     get totalCalories() {
@@ -143,6 +161,21 @@ export class Recipe {
         this.#touch();
     }
 
+    changeImageUrl(newImageUrl) {
+        this.#imageUrl = this.#validateImageUrl(newImageUrl);
+        this.#touch();
+    }
+
+    changeMealTypes(newMealTypes) {
+        this.#mealTypes = this.#validateMealTypes(newMealTypes);
+        this.#touch();
+    }
+
+    changeCookingMethod(newCookingMethod) {
+        this.#cookingMethod = this.#validateCookingMethod(newCookingMethod);
+        this.#touch();
+    }
+
     #validateTitle(title) {
         return Validator.string(title, {
             emptyError: RecipeErrors.TitleEmpty,
@@ -172,6 +205,42 @@ export class Recipe {
         return ingredients;
     }
 
+    #validateImageUrl(imageUrl) {
+        if (!imageUrl || typeof imageUrl !== 'string')
+            return null;
+
+        const trimmed = imageUrl.trim();
+        if (trimmed.length === 0)
+            return null;
+
+        if (trimmed.length > 500)
+            throw new DomainError(RecipeErrors.InvalidImageUrl);
+
+        return trimmed;
+    }
+
+    #validateMealTypes(mealTypes) {
+        if (!Array.isArray(mealTypes))
+            return [];
+
+        const validMealTypes = ['breakfast', 'lunch', 'dinner', 'snack'];
+        return mealTypes.filter(type => validMealTypes.includes(type));
+    }
+
+    #validateCookingMethod(cookingMethod) {
+        if (!cookingMethod || typeof cookingMethod !== 'string')
+            return null;
+
+        const trimmed = cookingMethod.trim();
+        if (trimmed.length === 0)
+            return null;
+
+        if (trimmed.length > 100)
+            throw new DomainError(RecipeErrors.InvalidCookingMethod);
+
+        return trimmed;
+    }
+
     toJSON(){
         return {
             id: this.#id,
@@ -182,6 +251,9 @@ export class Recipe {
                 ingredient: i.ingredient.toJSON ? i.ingredient.toJSON() : i.ingredient,
                 amountInGrams: i.amountInGrams
             })),
+            imageUrl: this.#imageUrl,
+            mealTypes: this.#mealTypes,
+            cookingMethod: this.#cookingMethod,
             nutrientsPerServing: this.nutrientsPerServing,
             updatedAt: this.#updatedAt
         };
