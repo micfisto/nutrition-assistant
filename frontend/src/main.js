@@ -1,6 +1,7 @@
 import { fetchRecipes } from "./services/recipesApi.js";
 import { renderDaysTabs } from "./components/daysTabs.js";
 import { createRecipeCard } from "./components/recipeCard.js";
+import { requireAuth, addLogoutHandler, displayUserInfo } from "./services/authGuard.js";
 
 const DAY_NAMES = {
   mon: "понедельник",
@@ -11,6 +12,10 @@ const DAY_NAMES = {
   sat: "субботу",
   sun: "воскресенье",
 };
+
+requireAuth();
+displayUserInfo();
+addLogoutHandler();
 
 const state = { activeDay: "mon", sortBy: "", order: "asc" };
 
