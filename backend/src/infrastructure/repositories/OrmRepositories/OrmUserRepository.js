@@ -28,7 +28,7 @@ export class OrmUserRepository {
 
     async findByLogin(login) {
         try {
-            const rawUser = await this.#ormModel.findUnique({where: {email: login}});
+            const rawUser = await this.#ormModel.findUnique({where: {login}});
             return UserMapper.toDomain(rawUser);
         } catch (err) {
             throw new InfrastructureError('DATABASE_QUERY_ERROR', err);
