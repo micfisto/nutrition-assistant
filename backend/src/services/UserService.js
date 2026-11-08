@@ -81,6 +81,19 @@ export class UserService {
         await this.#saveUser(user);
     }
 
+    async validateUserForLogin(login) {
+        const user = await userRepository.findByLogin(login);
+        if (!user) {
+            throw new DomainError(UserErrors.NotFound);
+        }
+
+        if (user.status !== 'ACTIVE') {
+            throw new DomainError(UserErrors.NotActive);
+        }
+
+        return user;
+    }
+
     async #getUserById(id) {
         const user = await userRepository.findById(id);
         if (!user)
