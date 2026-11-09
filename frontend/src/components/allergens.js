@@ -53,7 +53,10 @@ export function initAllergens(root) {
     <div class="allergens__list" role="group" aria-label="Быстрый выбор продуктов"></div>
 
     <div class="allergens__footer">
-      <span class="allergens__count"></span>
+      <div class="allergens__summary">
+        <span class="allergens__count"></span>
+        <button type="button" class="allergens__clear" hidden>Очистить всё</button>
+      </div>
       <button type="button" class="btn allergens__save">Сохранить в профиль</button>
     </div>
     <p class="allergens__status" role="status"></p>
@@ -69,6 +72,7 @@ export function initAllergens(root) {
   const listEl = root.querySelector(".allergens__list");
   const countEl = root.querySelector(".allergens__count");
   const saveBtn = root.querySelector(".allergens__save");
+  const clearBtn = root.querySelector(".allergens__clear");
   const statusEl = root.querySelector(".allergens__status");
 
   function setError(message = "") {
@@ -146,6 +150,7 @@ export function initAllergens(root) {
       words.length === 0
         ? "Ничего не исключено"
         : `Исключено продуктов: ${words.length}`;
+    clearBtn.hidden = words.length === 0;
   }
 
   function update() {
@@ -291,6 +296,17 @@ export function initAllergens(root) {
     update();
   });
 
+  clearBtn.addEventListener("click", () => {
+    words = [];
+    setError("");
+    update();
+    if (hasToken()) {
+      setStatus(
+        "Список очищен. Нажмите «Сохранить в профиль», чтобы обновить профиль",
+      );
+    }
+  });
+  
   saveBtn.addEventListener("click", save);
 
   load();
