@@ -10,8 +10,18 @@ const SORT_FIELDS = {
   carbs: "carbs",
 };
 
+function getMealTypes(recipe) {
+  return recipe.mealTypes ?? recipe.toJSON().mealTypes ?? [];
+}
+
 export class RecipeService {
-  async getRecipes({ sortBy, order = "asc", excludeIngredientIds = [] } = {}) {
+  async getRecipes({
+    sortBy,
+    order = "asc",
+    excludeIngredientIds = [],
+    search = "",
+    mealType = "",
+  } = {}) {
     let recipes = await recipeRepository.findAll();
 
     if (excludeIngredientIds.length > 0) {
@@ -20,6 +30,19 @@ export class RecipeService {
           !recipe.ingredients.some((i) =>
             excludeIngredientIds.includes(i.ingredient.id),
           ),
+      );
+    }
+
+    const query = search.trim().toLowerCase();
+    if (query) {
+      recipes = recipes.filter((recipe) =>
+        recipe.title.toLowerCase().includes(query),
+      );
+    }
+
+    if (mealType) {
+      recipes = recipes.filter((recipe) =>
+        getMealTypes(recipe).includes(mealType),
       );
     }
 

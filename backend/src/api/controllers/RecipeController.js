@@ -14,11 +14,13 @@ function handleError(res, err) {
 
 export async function getRecipes(req, res) {
   try {
-    const { sortBy, order, excludeIngredients } = req.query;
+    const { sortBy, order, excludeIngredients, search, mealType } = req.query;
 
     const recipes = await recipeService.getRecipes({
       sortBy,
       order,
+      search: search || "",
+      mealType: mealType || "",
       excludeIngredientIds: excludeIngredients
         ? excludeIngredients.split(",")
         : [],
