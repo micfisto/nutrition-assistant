@@ -4,14 +4,13 @@ import {
   calcTargets,
   validateInput,
 } from "../utils/nutritionCalc.js";
+import { initDatePicker, parseRuDate } from "./datePicker.js";
 
 export function initCalculator(root) {
   let goal = "MAINTAIN";
   let lastInput = null;
   let lastResult = null;
   let submitted = false;
-
-  const today = new Date().toISOString().split("T")[0];
 
   const activityOptions = ACTIVITY_LEVELS.map(
     (a) =>
@@ -29,11 +28,33 @@ export function initCalculator(root) {
           </select>
         </label>
 
-        <label class="field">
-          <span class="field__label">Дата рождения</span>
-          <input type="date" name="birthDate" min="1900-01-01" max="${today}" />
+        <div class="field">
+          <label class="field__label" for="calc-birthDate">Дата рождения</label>
+          <div class="datepicker" data-datepicker>
+            <input
+              type="text"
+              id="calc-birthDate"
+              name="birthDate"
+              class="datepicker__input"
+              placeholder="дд.мм.гггг"
+              inputmode="numeric"
+              maxlength="10"
+              autocomplete="off"
+            />
+            <button
+              type="button"
+              class="datepicker__toggle"
+              aria-label="Открыть календарь"
+              aria-expanded="false"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="3"></rect>
+                <path d="M16 2v4M8 2v4M3 10h18"></path>
+              </svg>
+            </button>
+          </div>
           <span class="field__error" data-error="birthDate"></span>
-        </label>
+        </div>
       </div>
 
       <div class="calc-form__row">
@@ -61,6 +82,7 @@ export function initCalculator(root) {
   `;
 
   const form = root.querySelector("#calc-form");
+  initDatePicker(form.querySelector("[data-datepicker]"));
   const resultEl = root.querySelector("#calc-result");
   const fieldNames = ["birthDate", "weight", "height"];
 
@@ -68,11 +90,17 @@ export function initCalculator(root) {
     return value === "" ? null : Number(value);
   }
 
+  function parseBirthDate(raw) {
+    const text = String(raw ?? "").trim();
+    if (text === "") return "";
+    return parseRuDate(text) ?? "invalid";
+  }
+  
   function readForm() {
     const data = new FormData(form);
     return {
       gender: data.get("gender"),
-      birthDate: data.get("birthDate"),
+      birthDate: parseBirthDate(data.get("birthDate")),
       weight: toNumber(data.get("weight")),
       height: toNumber(data.get("height")),
       activityLevel: Number(data.get("activity")),
