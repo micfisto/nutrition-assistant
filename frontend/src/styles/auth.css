@@ -1,0 +1,105 @@
+[hidden] {
+  display: none !important;
+}
+
+#app,
+#view-home {
+  display: grid;
+  gap: 32px;
+}
+
+/* ===== Страницы входа и регистрации ===== */
+.auth-module {
+  width: 100%;
+  max-width: 460px;
+  margin: 24px auto;
+  padding: 40px;
+  border-radius: 32px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+.auth-module h1 {
+  margin: 0 0 24px;
+  text-align: center;
+  font-size: 34px;
+}
+.auth-module form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.auth-module label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--olive);
+}
+.auth-module input {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid var(--timber);
+  border-radius: 12px;
+  background: var(--bg);
+  font-size: 15px;
+  color: var(--raisin);
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    background-color 0.2s;
+}
+.auth-module input:focus {
+  outline: none;
+  border-color: var(--green);
+  background: #fff;
+  box-shadow: 0 0 0 3px var(--green-light);
+}
+.auth-module button[type="submit"] {
+  padding: 14px;
+  border: none;
+  border-radius: 999px;
+  background: var(--green);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 0.25s,
+    transform 0.2s;
+}
+.auth-module button[type="submit"]:hover:not(:disabled) {
+  background: var(--green-dark);
+  transform: translateY(-2px);
+}
+.auth-module button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.auth-module .error-message {
+  display: block;
+  min-height: 0;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--garnet);
+}
+.auth-module p {
+  margin: 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--olive);
+}
+.auth-module a {
+  font-weight: 600;
+  color: var(--green-dark);
+}
+
+@media (max-width: 600px) {
+  #app,
+  #view-home {
+    gap: 20px;
+  }
+  .auth-module {
+    padding: 26px 20px;
+    border-radius: 24px;
+  }
+}
