@@ -2,10 +2,8 @@
   display: none !important;
 }
 
-#app,
-#view-home {
-  display: grid;
-  gap: 32px;
+#app {
+  display: block;
 }
 
 /* ===== Страницы входа и регистрации ===== */
@@ -94,10 +92,6 @@
 }
 
 @media (max-width: 600px) {
-  #app,
-  #view-home {
-    gap: 20px;
-  }
   .auth-module {
     padding: 26px 20px;
     border-radius: 24px;
