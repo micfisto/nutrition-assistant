@@ -7,7 +7,6 @@ redirectIfAuthenticated();
 const form = document.getElementById('login-form');
 const submitBtn = document.getElementById('submit-btn');
 
-// Real-time validation
 document.getElementById('loginOrEmail').addEventListener('input', (e) => {
   validateLoginOrEmail(e.target.value);
 });

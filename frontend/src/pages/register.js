@@ -17,7 +17,6 @@ redirectIfAuthenticated();
 const form = document.getElementById('register-form');
 const submitBtn = document.getElementById('submit-btn');
 
-// Real-time validation
 document.getElementById('login').addEventListener('input', (e) => {
   validateLogin(e.target.value.toLowerCase());
 });
