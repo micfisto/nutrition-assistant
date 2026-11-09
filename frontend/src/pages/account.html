@@ -1,0 +1,16 @@
+<div class="account" id="account-module">
+  <div class="account__head">
+    <h1>Личный кабинет</h1>
+    <p class="account__hello" id="account-hello"></p>
+  </div>
+
+  <div class="account__tabs" role="tablist" aria-label="Разделы кабинета">
+    <button type="button" role="tab" class="account__tab is-active" data-tab="norms" aria-selected="true">Мои нормы</button>
+    <button type="button" role="tab" class="account__tab" data-tab="favorites" aria-selected="false">Избранное</button>
+    <button type="button" role="tab" class="account__tab" data-tab="plans" aria-selected="false">Мои планы</button>
+  </div>
+
+  <section class="account__panel" id="panel-norms" role="tabpanel"></section>
+  <section class="account__panel" id="panel-favorites" role="tabpanel" hidden></section>
+  <section class="account__panel" id="panel-plans" role="tabpanel" hidden></section>
+</div>

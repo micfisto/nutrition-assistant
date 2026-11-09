@@ -1,0 +1,300 @@
+/* ===== личный кабинет ===== */
+.account {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 36px 44px;
+  border-radius: 32px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.account__head h1 {
+  margin: 0;
+  font-size: 32px;
+}
+
+.account__hello {
+  margin: 4px 0 0;
+  color: var(--olive);
+}
+
+.account__tabs {
+  display: flex;
+  gap: 6px;
+  margin: 24px 0 22px;
+  padding: 6px;
+  overflow-x: auto;
+  border-radius: 999px;
+  background: var(--green-light);
+  scrollbar-width: none;
+}
+
+.account__tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.account__tab {
+  flex: 1;
+  padding: 11px 18px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--olive);
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    box-shadow 0.2s;
+}
+
+.account__tab:hover {
+  color: var(--green-dark);
+}
+
+.account__tab.is-active {
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(78, 122, 71, 0.35);
+}
+
+.account__tab:focus-visible {
+  outline: 2px solid var(--green-dark);
+  outline-offset: 2px;
+}
+
+.account__panel[hidden] {
+  display: none;
+}
+
+.account__loading,
+.account__caption {
+  margin: 0 0 14px;
+  color: var(--olive);
+}
+
+.account__sub {
+  margin: 28px 0 12px;
+  font-size: 20px;
+  color: var(--green-dark);
+}
+
+/* нормы */
+.norm-cards {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(3, 1fr);
+  gap: 12px;
+}
+
+.norm-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: var(--green-light);
+}
+
+.norm-card span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--olive);
+}
+
+.norm-card b {
+  font-family: var(--font-head);
+  font-size: 30px;
+  line-height: 1.2;
+  color: var(--garnet);
+}
+
+.norm-card small {
+  font-size: 12px;
+  color: var(--olive);
+}
+
+.norm-card--main {
+  background: var(--green);
+}
+
+.norm-card--main span,
+.norm-card--main b,
+.norm-card--main small {
+  color: #fff;
+}
+
+/* параметры */
+.account__params {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+
+.account__params div {
+  padding: 12px 14px;
+  border: 1px solid var(--timber);
+  border-radius: 14px;
+}
+
+.account__params dt {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--olive);
+}
+
+.account__params dd {
+  margin: 2px 0 0;
+  font-weight: 700;
+}
+
+/* ограничения */
+.account__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--olive);
+}
+
+.account__tag {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #f6e6e3;
+  color: var(--garnet);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.account__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin: 22px 0 0;
+}
+
+.account__links a {
+  color: var(--green-dark);
+  font-weight: 600;
+}
+
+/* пустые состояния и ошибки */
+.account__empty,
+.account__error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 32px 16px;
+  border: 2px dashed var(--grullo);
+  border-radius: 20px;
+  text-align: center;
+  color: var(--olive);
+}
+
+.account__empty p,
+.account__error p {
+  margin: 0;
+}
+
+.account__error {
+  border-color: var(--garnet);
+  color: var(--garnet);
+}
+
+/* избранное */
+.btn-add--remove {
+  border: 1px solid var(--garnet);
+  background: transparent;
+  color: var(--garnet);
+}
+
+.btn-add--remove:hover {
+  background: #f6e6e3;
+}
+
+/* планы */
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.plan-day {
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: var(--green-light);
+}
+
+.plan-day__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.plan-day__head h4 {
+  margin: 0;
+  font-family: var(--font-head);
+  font-size: 18px;
+}
+
+.plan-day__head span {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--garnet);
+}
+
+.plan-day__list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plan-day__list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.plan-day__list small {
+  flex: none;
+  color: var(--olive);
+}
+
+.plan-day__empty {
+  color: var(--olive);
+  font-weight: 400;
+}
+
+@media (max-width: 800px) {
+  .norm-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .norm-card--main {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .account {
+    padding: 24px 16px;
+    border-radius: 24px;
+  }
+
+  .account__head h1 {
+    font-size: 26px;
+  }
+
+  .norm-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

@@ -1,5 +1,6 @@
 import loginHtml from "./pages/login.html?raw";
 import registerHtml from "./pages/register.html?raw";
+import accountHtml from "./pages/account.html?raw";
 import { isAuthenticated, logout } from "./services/authApi.js";
 
 const home = document.getElementById("view-home");
@@ -8,6 +9,7 @@ const auth = document.getElementById("view-auth");
 const PAGES = {
   "#/login": { html: loginHtml, script: "/src/pages/login.js" },
   "#/register": { html: registerHtml, script: "/src/pages/register.js" },
+  "#/account": { html: accountHtml, script: "/src/pages/account.js" },
 };
 
 const LINK_MAP = {
@@ -21,7 +23,7 @@ function showHome(hash) {
   auth.hidden = true;
   auth.innerHTML = "";
   home.hidden = false;
-  window.dispatchEvent(new Event("resize")); // пересчитать полоску вкладок дней
+  window.dispatchEvent(new Event("resize"));
 
   const isAnchor = hash && !hash.startsWith("#/") && hash.length > 1;
   const target = isAnchor ? document.querySelector(hash) : null;
@@ -40,7 +42,6 @@ async function showAuth(page) {
   });
 
   window.scrollTo({ top: 0 });
-  // Параметр ?v= заставляет скрипт страницы выполниться заново при каждом заходе
   await import(/* @vite-ignore */ `${page.script}?v=${Date.now()}`);
 }
 
@@ -52,6 +53,14 @@ function route() {
 }
 
 function setupAuthLinks() {
+  const navLogin = document.getElementById("nav-login");
+  if (navLogin && isAuthenticated()) {
+    const accountLink = document.createElement("a");
+    accountLink.href = "#/account";
+    accountLink.textContent = "Личный кабинет";
+    navLogin.before(accountLink);
+  }
+
   ["nav-login", "footer-login"].forEach((id) => {
     const link = document.getElementById(id);
     if (!link || !isAuthenticated()) return;

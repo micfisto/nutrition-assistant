@@ -11,7 +11,24 @@ const HEART = `
 let favoriteIds = new Set();
 let loadPromise = null;
 
-// список избранного грузится один раз для всех карточек
+function paint(button) {
+  const active = favoriteIds.has(button.dataset.recipeId);
+  button.classList.toggle("is-active", active);
+  button.setAttribute("aria-pressed", String(active));
+  const label = active ? "Убрать из избранного" : "Добавить в избранное";
+  button.setAttribute("aria-label", label);
+  button.title = label;
+}
+
+function paintAll() {
+  document.querySelectorAll(".fav-btn").forEach(paint);
+}
+
+export function syncFavorites(ids) {
+  favoriteIds = new Set(ids);
+  paintAll();
+}
+
 function loadFavoriteIds() {
   if (!hasToken()) return Promise.resolve();
   if (!loadPromise) {
@@ -20,7 +37,6 @@ function loadFavoriteIds() {
         favoriteIds = new Set(profile.favoriteRecipeIds ?? []);
       })
       .catch(() => {
-        loadPromise = null;
       });
   }
   return loadPromise;
@@ -30,24 +46,14 @@ export function createFavoriteButton(recipeId) {
   const button = document.createElement("button");
   button.type = "button";
   button.className = "fav-btn";
+  button.dataset.recipeId = recipeId;
   button.innerHTML = HEART;
 
-  function render() {
-    const active = favoriteIds.has(recipeId);
-    button.classList.toggle("is-active", active);
-    button.setAttribute("aria-pressed", String(active));
-    button.setAttribute(
-      "aria-label",
-      active ? "Убрать из избранного" : "Добавить в избранное",
-    );
-    button.title = active ? "Убрать из избранного" : "Добавить в избранное";
-  }
-
-  render();
-  loadFavoriteIds().then(render);
+  paint(button);
+  loadFavoriteIds().then(() => paint(button));
 
   button.addEventListener("click", async (e) => {
-    e.stopPropagation(); // клик по сердечку не должен открывать окно рецепта
+    e.stopPropagation();
 
     if (!hasToken()) {
       window.location.hash = "#/login";
@@ -59,12 +65,11 @@ export function createFavoriteButton(recipeId) {
       const result = favoriteIds.has(recipeId)
         ? await removeFavorite(recipeId)
         : await addFavorite(recipeId);
-      favoriteIds = new Set(result.favoriteRecipeIds);
+      syncFavorites(result.favoriteRecipeIds);
     } catch (err) {
       alert(err.message);
     } finally {
       button.disabled = false;
-      render();
     }
   });
 
