@@ -70,6 +70,7 @@
   transition:
     border-color 0.2s,
     background-color 0.2s;
+  animation: fadeUp 0.35s ease both;
 }
 .day-plan__item.is-replacing {
   border-color: var(--garnet);
@@ -135,12 +136,18 @@
   text-align: center;
   color: var(--olive);
   font-size: 14px;
+  animation: fadeUp 0.35s ease both;
 }
 
-.catalog-title {
-  margin: 28px 0 14px;
-  font-size: 20px;
-  color: var(--green-dark);
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ===== Кнопка на карточке каталога ===== */
@@ -171,22 +178,20 @@
   background: #5e211d;
 }
 
-/* ===== Правая панель ===== */
+/* ===== Правая панель (итог за день) ===== */
+.menu-layout {
+  grid-template-columns: 1fr 300px;
+  align-items: start;
+}
+.menu-side {
+  position: static;
+}
+
 .side-label {
   margin: 6px 0 0;
   font-size: 13px;
   font-weight: 600;
   color: var(--olive);
-}
-
-.menu-side select {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid var(--timber);
-  border-radius: 12px;
-  background: #fff;
-  font-size: 15px;
-  color: var(--raisin);
 }
 
 .day-total {
@@ -251,8 +256,72 @@
   color: var(--green-dark);
 }
 
+/* ===== Каталог на всю ширину ===== */
+.catalog {
+  margin-top: 36px;
+  padding-top: 8px;
+  border-top: 1px solid var(--timber);
+}
+.catalog-title {
+  margin: 24px 0 16px;
+  font-size: 20px;
+  color: var(--green-dark);
+}
+
+.catalog-toolbar {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.side-input,
+.catalog-toolbar select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--timber);
+  border-radius: 12px;
+  background: var(--bg);
+  font-size: 15px;
+  color: var(--raisin);
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    background-color 0.2s;
+}
+.catalog-toolbar select {
+  appearance: none;
+  padding-right: 38px;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%234E7A47' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+.side-input:focus,
+.catalog-toolbar select:focus {
+  outline: none;
+  border-color: var(--green);
+  background-color: #fff;
+  box-shadow: 0 0 0 3px var(--green-light);
+}
+
+/* ===== Планшет ===== */
+@media (max-width: 1024px) {
+  .menu-layout {
+    grid-template-columns: 1fr;
+  }
+  .catalog-toolbar {
+    grid-template-columns: 1fr 1fr;
+  }
+  .catalog-toolbar .side-input {
+    grid-column: 1 / -1;
+  }
+}
+
 /* ===== Телефон ===== */
 @media (max-width: 600px) {
+  .catalog-toolbar {
+    grid-template-columns: 1fr;
+  }
   .day-plan__item {
     flex-wrap: wrap;
     gap: 8px 12px;

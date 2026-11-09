@@ -287,29 +287,34 @@ body {
 .slot__icon {
   font-size: 34px;
 }
-.slot h2 {
-  margin: 0;
-  font-size: 24px;
-  color: var(--raisin);
-}
 .slot p {
   margin: 0;
   font-size: 14px;
 }
 
-/* ===== Меню ===== */
+/* ===== Единый вид секций ===== */
+.calc-section,
 .menu-block {
-  padding: 44px;
-  border-radius: 36px;
+  padding: 40px;
+  border-radius: 32px;
   background: var(--card);
   box-shadow: var(--shadow);
 }
-.menu-block > h2 {
+
+/* ===== Единый размер заголовков секций ===== */
+.menu-block > h2,
+.calc-section > h2,
+.slot h2 {
   margin: 0 0 24px;
   text-align: center;
-  font-size: 36px;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--raisin);
 }
 
+/* ===== Меню ===== */
 .day-title {
   margin: 0;
   font-size: 22px;
@@ -321,6 +326,7 @@ body {
   grid-template-columns: 1fr 290px;
   gap: 28px;
   align-items: start;
+  margin-top: 24px;
 }
 
 .menu-block .recipe-catalog__list {
@@ -330,8 +336,7 @@ body {
 }
 
 .menu-side {
-  position: sticky;
-  top: 96px;
+  position: static;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -363,10 +368,6 @@ body {
 .days-tabs-container {
   background: var(--green-light);
   box-shadow: none;
-}
-.day-tab.active {
-  background-color: var(--green);
-  box-shadow: 0 4px 10px rgba(78, 122, 71, 0.35);
 }
 
 .recipe-card {
@@ -443,9 +444,6 @@ body {
   .menu-layout {
     grid-template-columns: 1fr;
   }
-  .menu-side {
-    position: static;
-  }
   .banner h1 {
     font-size: 42px;
   }
@@ -499,12 +497,15 @@ body {
     border-radius: 24px;
   }
 
+  .calc-section,
   .menu-block {
     padding: 22px 16px;
-    border-radius: 26px;
+    border-radius: 24px;
   }
-  .menu-block > h2 {
-    font-size: 27px;
+  .menu-block > h2,
+  .calc-section > h2,
+  .slot h2 {
+    font-size: 24px;
   }
   .menu-block .recipe-catalog__list {
     grid-template-columns: 1fr;

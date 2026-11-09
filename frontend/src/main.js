@@ -8,10 +8,7 @@ import {
   loadNorm,
   saveNorm,
 } from "./services/planStorage.js";
-// import { requireAuth, addLogoutHandler, displayUserInfo } from "./services/authGuard.js";
-// requireAuth();
-// displayUserInfo();
-// addLogoutHandler();
+import { fetchPlan, pushPlan } from "./services/plansApi.js";
 
 const DAY_NAMES = {
   mon: "понедельник",
@@ -27,6 +24,8 @@ const state = {
   activeDay: "mon",
   sortBy: "",
   order: "asc",
+  search: "",
+  mealType: "",
   plan: loadPlan(),
   norm: loadNorm(),
   replacing: null, // { day, index } пока выбираем блюдо для замены
@@ -50,8 +49,13 @@ const normTextEl = $("norm-text");
 const normInput = $("norm-input");
 const saveNote = $("save-note");
 
+let pushTimer;
 function persist() {
   savePlan(state.plan);
+  clearTimeout(pushTimer);
+  pushTimer = setTimeout(() => {
+    pushPlan(state.plan).catch(() => {});
+  }, 400);
 }
 
 function dayRecipes() {
@@ -205,12 +209,29 @@ async function loadRecipes() {
     lastRecipes = await fetchRecipes({
       sortBy: state.sortBy,
       order: state.order,
+      search: state.search,
+      mealType: state.mealType,
     });
     lastRecipes.forEach((r) => byId.set(r.id, r));
-    statusEl.textContent = "";
+    statusEl.textContent = lastRecipes.length ? "" : "Ничего не найдено";
     renderAll();
   } catch (err) {
     statusEl.textContent = `Не удалось загрузить рецепты: ${err.message}`;
+  }
+}
+
+/* ---------- Синхронизация плана с сервером (только для вошедших) ---------- */
+async function syncFromServer() {
+  try {
+    const remote = await fetchPlan();
+    const week1 = remote && remote.weeks && remote.weeks[1];
+    if (week1) {
+      state.plan = { ...state.plan, ...week1 };
+      savePlan(state.plan);
+      renderAll();
+    }
+  } catch {
+    /* сервер недоступен, остаётся localStorage */
   }
 }
 
@@ -221,6 +242,19 @@ $("sort-by").addEventListener("change", (e) => {
 });
 $("sort-order").addEventListener("change", (e) => {
   state.order = e.target.value;
+  loadRecipes();
+});
+
+let searchTimer;
+$("search-input").addEventListener("input", (e) => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    state.search = e.target.value;
+    loadRecipes();
+  }, 300);
+});
+$("meal-type").addEventListener("change", (e) => {
+  state.mealType = e.target.value;
   loadRecipes();
 });
 
@@ -242,10 +276,11 @@ normInput.addEventListener("change", () => {
 
 $("save-btn").addEventListener("click", () => {
   const ok = savePlan(state.plan);
+  pushPlan(state.plan).catch(() => {});
   saveNote.textContent = ok ? "Меню сохранено ✓" : "Не удалось сохранить";
   setTimeout(() => (saveNote.textContent = ""), 2000);
 });
 
 renderDay();
 renderPlan();
-loadRecipes();
+loadRecipes().then(syncFromServer);
