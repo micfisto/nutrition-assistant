@@ -1,6 +1,7 @@
 import { recipeRepository } from "../infrastructure/repositories/recipeRepository.js";
 import { DomainError } from "../domain/errors/DomainError.js";
 import { GeneralErrors } from "../domain/errors/GeneralErrors.js";
+import { matchesExcluded } from "../domain/helpers/FoodMatcher.js";
 
 // ключ из запроса -> поле в recipe.nutrientsPerServing
 const SORT_FIELDS = {
@@ -19,6 +20,7 @@ export class RecipeService {
     sortBy,
     order = "asc",
     excludeIngredientIds = [],
+    excludeWords = [],
     search = "",
     mealType = "",
   } = {}) {
@@ -29,6 +31,15 @@ export class RecipeService {
         (recipe) =>
           !recipe.ingredients.some((i) =>
             excludeIngredientIds.includes(i.ingredient.id),
+          ),
+      );
+    }
+
+    if (excludeWords.length > 0) {
+      recipes = recipes.filter(
+        (recipe) =>
+          !recipe.ingredients.some((i) =>
+            matchesExcluded(i.ingredient.name, excludeWords),
           ),
       );
     }

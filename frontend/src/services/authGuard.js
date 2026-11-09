@@ -2,7 +2,7 @@ import { isAuthenticated, logout } from './authApi.js';
 
 export function requireAuth() {
   if (!isAuthenticated()) {
-    window.location.href = 'login.html';
+    window.location.href = '/login.html';
     return false;
   }
   return true;
@@ -14,7 +14,7 @@ export function addLogoutHandler() {
     logoutBtn.addEventListener('click', (e) => {
       e.preventDefault();
       logout();
-      window.location.href = 'login.html';
+      window.location.href = '/login.html';
     });
   }
 }

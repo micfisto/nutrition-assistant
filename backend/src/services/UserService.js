@@ -6,7 +6,7 @@ import {UserErrors} from '../domain/errors/UserErrors.js';
 export class UserService {
 
     async registerUser({login, username, email, passwordHash, role}) {
-        const existingByLogin = await userRepository.findByLogin({login});
+        const existingByLogin = await userRepository.findByLogin(login);
         if(existingByLogin)
             throw new DomainError(UserErrors.LoginAlreadyExists);
 
@@ -22,7 +22,7 @@ export class UserService {
             role
         });
 
-        await this.#saveUser(user);
+        return this.#saveUser(user);
     }
 
     async updateUser({id, login, username, email}) {
@@ -81,8 +81,13 @@ export class UserService {
         await this.#saveUser(user);
     }
 
-    async validateUserForLogin(login) {
-        const user = await userRepository.findByLogin(login);
+    async validateUserForLogin(loginOrEmail) {
+        let user = await userRepository.findByLogin(loginOrEmail);
+        
+        if (!user) {
+            user = await userRepository.findByEmail(loginOrEmail);
+        }
+
         if (!user) {
             throw new DomainError(UserErrors.NotFound);
         }

@@ -1,0 +1,166 @@
+import {
+  ACTIVITY_LEVELS,
+  DEFAULT_ACTIVITY,
+  calcTargets,
+  validateInput,
+} from "../utils/nutritionCalc.js";
+
+export function initCalculator(root) {
+  let goal = "MAINTAIN";
+  let lastInput = null;
+  let lastResult = null;
+  let submitted = false;
+
+  const today = new Date().toISOString().split("T")[0];
+
+  const activityOptions = ACTIVITY_LEVELS.map(
+    (a) =>
+      `<option value="${a.value}"${a.value === DEFAULT_ACTIVITY ? " selected" : ""}>${a.label}</option>`,
+  ).join("");
+
+  root.innerHTML = `
+    <form class="calc-form" id="calc-form" novalidate>
+      <div class="calc-form__row">
+        <label class="field">
+          <span class="field__label">Пол</span>
+          <select name="gender">
+            <option value="female">Женский</option>
+            <option value="male">Мужской</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Дата рождения</span>
+          <input type="date" name="birthDate" min="1900-01-01" max="${today}" />
+          <span class="field__error" data-error="birthDate"></span>
+        </label>
+      </div>
+
+      <div class="calc-form__row">
+        <label class="field">
+          <span class="field__label">Вес, кг</span>
+          <input type="number" name="weight" inputmode="decimal" min="30" max="300" step="0.1" placeholder="например, 65" />
+          <span class="field__error" data-error="weight"></span>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Рост, см</span>
+          <input type="number" name="height" inputmode="numeric" min="100" max="250" step="1" placeholder="например, 165" />
+          <span class="field__error" data-error="height"></span>
+        </label>
+      </div>
+
+      <label class="field">
+        <span class="field__label">Уровень активности</span>
+        <select name="activity">${activityOptions}</select>
+      </label>
+
+      <button type="submit" class="btn btn--wide">Рассчитать</button>
+    </form>
+    <div class="calc-result" id="calc-result" hidden></div>
+  `;
+
+  const form = root.querySelector("#calc-form");
+  const resultEl = root.querySelector("#calc-result");
+  const fieldNames = ["birthDate", "weight", "height"];
+
+  function toNumber(value) {
+    return value === "" ? null : Number(value);
+  }
+
+  function readForm() {
+    const data = new FormData(form);
+    return {
+      gender: data.get("gender"),
+      birthDate: data.get("birthDate"),
+      weight: toNumber(data.get("weight")),
+      height: toNumber(data.get("height")),
+      activityLevel: Number(data.get("activity")),
+    };
+  }
+
+  function showFieldError(name, message = "") {
+    form.querySelector(`[data-error="${name}"]`).textContent = message;
+    form.elements[name].classList.toggle("is-invalid", Boolean(message));
+  }
+
+  function showErrors(errors) {
+    fieldNames.forEach((name) => showFieldError(name, errors[name]));
+  }
+
+  function renderResult(r) {
+    resultEl.hidden = false;
+    resultEl.innerHTML = `
+      <div class="calc-result__kcal">${r.calories} ккал/день</div>
+      <div class="calc-result__macros">
+        <span>Б ${r.protein} г</span>
+        <span>Ж ${r.fat} г</span>
+        <span>У ${r.carbs} г</span>
+      </div>
+      <p class="calc-result__note">
+        Базовый обмен (BMR): ${r.bmr} ккал · с учётом активности (TDEE): ${r.tdee} ккал
+      </p>
+    `;
+  }
+
+  function recalc() {
+    if (!lastInput) return;
+    lastResult = calcTargets({ ...lastInput, goal });
+    renderResult(lastResult);
+  }
+
+  function process() {
+    const input = readForm();
+    const errors = validateInput(input);
+    showErrors(errors);
+
+    if (Object.keys(errors).length > 0) {
+      lastInput = null;
+      lastResult = null;
+      resultEl.hidden = true;
+      return false;
+    }
+
+    lastInput = input;
+    recalc();
+    return true;
+  }
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    submitted = true;
+    if (process()) {
+      resultEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    } else {
+      form.querySelector(".is-invalid")?.focus();
+    }
+  });
+
+  form.addEventListener("input", (e) => {
+    if (submitted) {
+      process();
+      return;
+    }
+  
+    const name = e.target.name;
+    if (fieldNames.includes(name) && e.target.classList.contains("is-invalid")) {
+      showFieldError(name, validateInput(readForm())[name]);
+    }
+  });
+
+  form.addEventListener("focusout", (e) => {
+    const name = e.target.name;
+    if (!fieldNames.includes(name) || submitted || e.target.value === "") return;
+    showFieldError(name, validateInput(readForm())[name]);
+  });
+
+  return {
+    setGoal(newGoal) {
+      goal = newGoal;
+      recalc();
+    },
+    getResult() {
+      return lastResult;
+    },
+  };
+}

@@ -2,6 +2,7 @@ import {ActivityLevel} from "../enums/ActivityLevel.js";
 import {GoalType} from "../enums/GoalType.js";
 import {DomainError} from "../errors/DomainError.js";
 import {UserProfileErrors} from "../errors/UserProfileErrors.js";
+import {Validator} from "../helpers/Validator.js";
 
 export class UserProfile {
     #id;
@@ -15,9 +16,14 @@ export class UserProfile {
     /** IngredientIds []*/
     #favoriteRecipeIds;
     /** RecipeIds []*/
+    #targetCalories;
+    #targetProteins;
+    #targetFats;
+    #targetCarbs;
+    #excludedFoods;
     #updatedAt;
 
-    constructor(id, userId, birthDate, weight, height, activityLevel = ActivityLevel.MODERATE, goal = GoalType.MAINTAIN, allergenIds = [], favoriteRecipeIds = [], updatedAt = null) {
+    constructor(id, userId, birthDate, weight, height, activityLevel = ActivityLevel.MODERATE, goal = GoalType.MAINTAIN, allergenIds = [], favoriteRecipeIds = [], updatedAt = null, targets = {}, excludedFoods = []) {
         if (!userId)
             throw new DomainError(UserProfileErrors.ProfileUserIdEmpty);
 
@@ -26,10 +32,15 @@ export class UserProfile {
         this.#birthDate = this.#validateBirthDate(birthDate);
         this.#weight = this.#validateWeight(weight);
         this.#height = this.#validateHeight(height);
-        this.#activityLevel = activityLevel;
-        this.#goal = goal;
+        this.#activityLevel =  this.#validateActivityLevel(activityLevel);
+        this.#goal = this.#validateGoal(goal);
         this.#allergenIds = Array.isArray(allergenIds) ? allergenIds : [];
         this.#favoriteRecipeIds = Array.isArray(favoriteRecipeIds) ? favoriteRecipeIds : [];
+        this.#targetCalories = this.#validateTarget(targets.calories, {min: 500, max: 10000});
+        this.#targetProteins = this.#validateTarget(targets.proteins, {min: 0, max: 1000});
+        this.#targetFats = this.#validateTarget(targets.fats, {min: 0, max: 1000});
+        this.#targetCarbs = this.#validateTarget(targets.carbs, {min: 0, max: 2000});
+        this.#excludedFoods = this.#validateExcludedFoods(excludedFoods);
         this.#updatedAt = updatedAt ? new Date(updatedAt) : new Date();
     }
 
@@ -41,10 +52,20 @@ export class UserProfile {
                       activityLevel = ActivityLevel.MODERATE,
                       goal = GoalType.MAINTAIN,
                       allergenIds = [],
-                      favoriteRecipeIds = []
+                      favoriteRecipeIds = [],
+                      targetCalories = null,
+                      targetProteins = null,
+                      targetFats = null,
+                      targetCarbs = null,
+                      excludedFoods = []
                   }) {
         const id = crypto.randomUUID();
-        return new UserProfile(id, userId, birthDate, weight, height, activityLevel, goal, allergenIds, favoriteRecipeIds);
+        return new UserProfile(id, userId, birthDate, weight, height, activityLevel, goal, allergenIds, favoriteRecipeIds, null, {
+            calories: targetCalories,
+            proteins: targetProteins,
+            fats: targetFats,
+            carbs: targetCarbs
+        }, excludedFoods);
     }
 
     static restore({
@@ -57,12 +78,22 @@ export class UserProfile {
                        goal,
                        allergenIds = [],
                        favoriteRecipeIds = [],
+                       targetCalories = null,
+                       targetProteins = null,
+                       targetFats = null,
+                       targetCarbs = null,
+                       excludedFoods = [],
                        updatedAt
                    }) {
         if (!id)
             throw new DomainError(UserProfileErrors.ProfileIdEmpty);
 
-        return new UserProfile(id, userId, birthDate, weight, height, activityLevel, goal, allergenIds, favoriteRecipeIds, updatedAt);
+        return new UserProfile(id, userId, birthDate, weight, height, activityLevel, goal, allergenIds, favoriteRecipeIds, updatedAt, {
+            calories: targetCalories,
+            proteins: targetProteins,
+            fats: targetFats,
+            carbs: targetCarbs
+        }, excludedFoods);
     }
 
     get id() {
@@ -101,6 +132,26 @@ export class UserProfile {
         return [...this.#favoriteRecipeIds];
     }
 
+    get targetCalories() {
+        return this.#targetCalories;
+    }
+
+    get targetProteins() {
+        return this.#targetProteins;
+    }
+
+    get targetFats() {
+        return this.#targetFats;
+    }
+
+    get targetCarbs() {
+        return this.#targetCarbs;
+    }
+
+    get excludedFoods() {
+        return [...this.#excludedFoods];
+    }
+
     get updatedAt() {
         return new Date(this.#updatedAt);
     }
@@ -136,12 +187,38 @@ export class UserProfile {
     }
 
     changeActivityLevel(activityLevel) {
-        this.#activityLevel = activityLevel;
+        this.#activityLevel = this.#validateActivityLevel(activityLevel);
         this.#touch();
     }
 
     changeGoal(goal) {
-        this.#goal = goal;
+        this.#goal =this.#validateGoal(goal);
+        this.#touch();
+    }
+
+    changeTargets({
+                      calories = this.#targetCalories,
+                      proteins = this.#targetProteins,
+                      fats = this.#targetFats,
+                      carbs = this.#targetCarbs
+                  } = {}) {
+        this.#targetCalories = this.#validateTarget(calories, {min: 500, max: 10000});
+        this.#targetProteins = this.#validateTarget(proteins, {min: 0, max: 1000});
+        this.#targetFats = this.#validateTarget(fats, {min: 0, max: 1000});
+        this.#targetCarbs = this.#validateTarget(carbs, {min: 0, max: 2000});
+        this.#touch();
+    }
+
+    changeAllergens(allergenIds) {
+        if (!Array.isArray(allergenIds) || allergenIds.some(id => typeof id !== 'string' || !id.trim()))
+            throw new DomainError(UserProfileErrors.InvalidAllergens);
+
+        this.#allergenIds = [...new Set(allergenIds.map(id => id.trim()))];
+        this.#touch();
+    }
+
+    changeExcludedFoods(excludedFoods) {
+        this.#excludedFoods = this.#validateExcludedFoods(excludedFoods);
         this.#touch();
     }
 
@@ -206,6 +283,42 @@ export class UserProfile {
         return height;
     }
 
+    #validateActivityLevel(activityLevel) {
+        return Validator.enum(activityLevel, ActivityLevel, UserProfileErrors.InvalidActivityLevel);
+    }
+
+    #validateGoal(goal) {
+        return Validator.enum(goal, GoalType, UserProfileErrors.InvalidGoal);
+    }
+
+    #validateTarget(value, {min, max}) {
+        if (value === null || value === undefined)
+            return null;
+        return Validator.number(value, {min, max, errorKey: UserProfileErrors.InvalidTargets});
+    }
+
+        #validateExcludedFoods(foods) {
+        if (foods === null || foods === undefined)
+            return [];
+
+        if (!Array.isArray(foods) || foods.length > 50)
+            throw new DomainError(UserProfileErrors.InvalidExcludedFoods);
+
+        const result = [];
+        for (const item of foods) {
+            if (typeof item !== 'string')
+                throw new DomainError(UserProfileErrors.InvalidExcludedFoods);
+
+            const word = item.trim().replace(/\s+/g, ' ');
+            if (word.length < 2 || word.length > 40)
+                throw new DomainError(UserProfileErrors.InvalidExcludedFoods);
+
+            if (!result.some(w => w.toLowerCase() === word.toLowerCase()))
+                result.push(word);
+        }
+        return result;
+    }
+
     toJSON() {
         return {
             id: this.#id,
@@ -217,6 +330,11 @@ export class UserProfile {
             goal: this.#goal,
             allergenIds: this.#allergenIds,
             favoriteRecipeIds: this.#favoriteRecipeIds,
+            targetCalories: this.#targetCalories,
+            targetProteins: this.#targetProteins,
+            targetFats: this.#targetFats,
+            targetCarbs: this.#targetCarbs,
+            excludedFoods: this.#excludedFoods,
             updatedAt: this.#updatedAt
         };
     }

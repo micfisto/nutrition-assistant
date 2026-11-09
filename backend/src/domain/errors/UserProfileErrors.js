@@ -9,4 +9,10 @@ export class UserProfileErrors{
     static InvalidWeight = 'PROFILE_INVALID_WEIGHT';
     static InvalidHeight = 'PROFILE_INVALID_HEIGHT';
     static ProfileIdEmpty = 'PROFILE_ID_EMPTY';
+
+    static InvalidActivityLevel = 'PROFILE_INVALID_ACTIVITY_LEVEL';
+    static InvalidGoal = 'PROFILE_INVALID_GOAL';
+    static InvalidAllergens = 'PROFILE_INVALID_ALLERGENS';
+    static InvalidTargets = 'PROFILE_INVALID_TARGETS';
+    static InvalidExcludedFoods = 'PROFILE_INVALID_EXCLUDED_FOODS';
 }

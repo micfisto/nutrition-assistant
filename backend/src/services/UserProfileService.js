@@ -36,27 +36,45 @@ export class UserProfileService {
     return profile;
   }
 
-  async updateProfile(id, updates) {
-    const profile = await this.getProfileById(id);
+   async updateProfile(id, updates) {
+    const current = await this.getProfileById(id);
+
+    const draft = UserProfile.restore(current.toJSON());
 
     if (updates.birthDate !== undefined) {
-      profile.changeBirthDate(updates.birthDate);
+      draft.changeBirthDate(updates.birthDate);
     }
     if (updates.weight !== undefined) {
-      profile.changeWeight(updates.weight);
+      draft.changeWeight(updates.weight);
     }
     if (updates.height !== undefined) {
-      profile.changeHeight(updates.height);
+      draft.changeHeight(updates.height);
     }
     if (updates.activityLevel !== undefined) {
-      profile.changeActivityLevel(updates.activityLevel);
+      draft.changeActivityLevel(updates.activityLevel);
     }
     if (updates.goal !== undefined) {
-      profile.changeGoal(updates.goal);
+      draft.changeGoal(updates.goal);
+    }
+    if (updates.allergenIds !== undefined) {
+      draft.changeAllergens(updates.allergenIds);
     }
 
-    await userProfileRepository.save(profile);
-    return profile;
+        if (updates.excludedFoods !== undefined) {
+      draft.changeExcludedFoods(updates.excludedFoods);
+    }
+
+    const targets = {};
+    if (updates.targetCalories !== undefined) targets.calories = updates.targetCalories;
+    if (updates.targetProteins !== undefined) targets.proteins = updates.targetProteins;
+    if (updates.targetFats !== undefined) targets.fats = updates.targetFats;
+    if (updates.targetCarbs !== undefined) targets.carbs = updates.targetCarbs;
+    if (Object.keys(targets).length > 0) {
+      draft.changeTargets(targets);
+    }
+
+    await userProfileRepository.save(draft);
+    return draft;
   }
 
   async addAllergen(id, allergenId) {

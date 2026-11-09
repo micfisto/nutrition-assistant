@@ -1,0 +1,146 @@
+<div class="auth-module" id="register-module">
+  <h1>Регистрация</h1>
+  
+  <form id="register-form">
+    <div>
+      <label for="login">Логин *</label>
+      <input 
+        type="text" 
+        id="login" 
+        name="login" 
+        placeholder="Логин (3-32 символа)"
+        required
+        minlength="3"
+        maxlength="32"
+        pattern="[a-z0-9_-]+"
+        title="Логин может содержать только латиницу, цифры, _ и -"
+      />
+      <span class="error-message" id="login-error"></span>
+    </div>
+
+    <div>
+      <label for="username">Имя пользователя *</label>
+      <input 
+        type="text" 
+        id="username" 
+        name="username" 
+        placeholder="Имя пользователя"
+        required
+        minlength="3"
+        maxlength="50"
+      />
+      <span class="error-message" id="username-error"></span>
+    </div>
+
+    <div>
+      <label for="email">Email *</label>
+      <input 
+        type="email" 
+        id="email" 
+        name="email" 
+        placeholder="email@example.com"
+        required
+      />
+      <span class="error-message" id="email-error"></span>
+    </div>
+
+    <div>
+      <label for="password">Пароль *</label>
+      <input 
+        type="password" 
+        id="password" 
+        name="password" 
+        placeholder="Минимум 6 символов"
+        required
+        minlength="6"
+      />
+      <span class="error-message" id="password-error"></span>
+    </div>
+
+    <div>
+      <label for="confirm-password">Подтвердите пароль *</label>
+      <input 
+        type="password" 
+        id="confirm-password" 
+        name="confirm-password" 
+        placeholder="Повторите пароль"
+        required
+      />
+      <span class="error-message" id="confirm-password-error"></span>
+    </div>
+
+    <hr />
+
+    <div>
+      <label for="birthDate">Дата рождения *</label>
+      <input 
+        type="date" 
+        id="birthDate" 
+        name="birthDate" 
+        required
+      />
+      <span class="error-message" id="birthDate-error"></span>
+    </div>
+
+    <div class="form-row">
+      <div>
+        <label for="weight">Вес (кг) *</label>
+        <input 
+          type="number" 
+          id="weight" 
+          name="weight" 
+          placeholder="30-300"
+          required
+          min="30"
+          max="300"
+          step="0.1"
+        />
+        <span class="error-message" id="weight-error"></span>
+      </div>
+
+      <div>
+        <label for="height">Рост (см) *</label>
+        <input 
+          type="number" 
+          id="height" 
+          name="height" 
+          placeholder="100-250"
+          required
+          min="100"
+          max="250"
+        />
+        <span class="error-message" id="height-error"></span>
+      </div>
+    </div>
+
+    <div>
+      <label for="activityLevel">Уровень активности</label>
+      <select id="activityLevel" name="activityLevel">
+        <option value="SEDENTARY">Сидячий образ жизни</option>
+        <option value="LIGHT">Легкая активность</option>
+        <option value="MODERATE" selected>Умеренная активность</option>
+        <option value="ACTIVE">Высокая активность</option>
+        <option value="VERY_ACTIVE">Очень высокая активность</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="goal">Цель</label>
+      <select id="goal" name="goal">
+        <option value="LOSE_WEIGHT">Похудение</option>
+        <option value="MAINTAIN" selected>Поддержание веса</option>
+        <option value="GAIN_WEIGHT">Набор веса</option>
+      </select>
+    </div>
+
+    <button type="submit" id="submit-btn">
+      Зарегистрироваться
+    </button>
+
+    <p>
+      Уже есть аккаунт? <a href="/login.html">Войти</a>
+    </p>
+  </form>
+</div>
+
+<script type="module" src="/src/pages/register.js"></script>

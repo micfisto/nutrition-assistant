@@ -1,0 +1,213 @@
+/* ===== пищевые ограничения ===== */
+#allergens-root {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.allergens__lead {
+  margin: 0 0 14px;
+  color: var(--olive);
+}
+
+/* поле ввода */
+.allergens__form {
+  display: flex;
+  gap: 10px;
+}
+
+.allergens__input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--timber);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--raisin);
+  font-size: 15px;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.allergens__input::placeholder {
+  color: var(--grullo);
+}
+
+.allergens__input:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px var(--green-light);
+}
+
+.allergens__input.is-invalid {
+  border-color: var(--garnet);
+  background: #fdf5f4;
+}
+
+.allergens__add {
+  padding: 12px 24px;
+}
+
+.allergens__error {
+  min-height: 18px;
+  margin: 6px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--garnet);
+}
+
+/* вписанные продукты */
+.allergens__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.allergen-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px 6px 14px;
+  border-radius: 999px;
+  background: #f6e6e3;
+  color: var(--garnet);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.allergen-tag__remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--garnet);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.allergen-tag__remove:hover {
+  background: rgba(138, 59, 51, 0.15);
+}
+
+/* список готовых продуктов */
+.allergens__sub {
+  margin: 18px 0 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--olive);
+}
+
+.allergens__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.allergen-chip {
+  padding: 9px 16px;
+  border: 1px solid var(--timber);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--raisin);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    color 0.2s;
+}
+
+.allergen-chip:hover {
+  border-color: var(--green);
+  background: var(--green-light);
+}
+
+.allergen-chip:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+/* выбранный продукт исключён из рациона */
+.allergen-chip[aria-pressed="true"] {
+  border-color: var(--garnet);
+  background: #f6e6e3;
+  color: var(--garnet);
+}
+
+.allergen-chip[aria-pressed="true"]::before {
+  content: "✕ ";
+}
+
+/* нижняя панель */
+.allergens__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--timber);
+}
+
+.allergens__count {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--olive);
+}
+
+.allergens__save {
+  padding: 12px 28px;
+}
+
+.allergens__save:disabled {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+}
+
+.allergens__status {
+  min-height: 20px;
+  margin: 12px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--olive);
+}
+
+.allergens__status--ok {
+  color: var(--green-dark);
+}
+
+.allergens__status--error {
+  color: var(--garnet);
+}
+
+.allergens__status a {
+  color: var(--green-dark);
+}
+
+.allergens__note {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--olive);
+}
+
+@media (max-width: 600px) {
+  .allergens__form {
+    flex-direction: column;
+  }
+
+  .allergens__footer {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+}

@@ -1,11 +1,11 @@
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
 import { getErrorMessage } from './errorMessages.js';
 
-export async function register({ login, username, email, password }) {
+export async function register({ login, username, email, password, birthDate, weight, height, activityLevel, goal, allergenIds }) {
   const response = await fetch(`${API_URL}/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ login, username, email, password }),
+    body: JSON.stringify({ login, username, email, password, birthDate, weight, height, activityLevel, goal, allergenIds }),
   });
 
   if (!response.ok) {
@@ -16,11 +16,11 @@ export async function register({ login, username, email, password }) {
   return response.json();
 }
 
-export async function login({ email, password }) {
+export async function login({ loginOrEmail, password }) {
   const response = await fetch(`${API_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ loginOrEmail, password }),
   });
 
   if (!response.ok) {

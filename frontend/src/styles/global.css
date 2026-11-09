@@ -40,3 +40,47 @@ input,
 select {
   font-family: inherit;
 }
+
+@supports (appearance: base-select) {
+  select,
+  ::picker(select) {
+    appearance: base-select;
+  }
+
+  select::picker-icon {
+    color: var(--olive);
+    transition: rotate 0.2s;
+  }
+  select:open::picker-icon {
+    rotate: 180deg;
+  }
+
+  ::picker(select) {
+    margin-top: 6px;
+    padding: 6px;
+    border: 1px solid var(--timber);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: var(--shadow);
+  }
+
+  select option {
+    padding: 10px 12px;
+    border-radius: 9px;
+    color: var(--raisin);
+    font-size: 15px;
+    cursor: pointer;
+  }
+  select option:hover,
+  select option:focus {
+    background: var(--green-light);
+  }
+  select option:checked {
+    background: var(--green-light);
+    color: var(--green-dark);
+    font-weight: 700;
+  }
+  select option::checkmark {
+    color: var(--green);
+  }
+}
