@@ -5,6 +5,7 @@ import {
   validateInput,
 } from "../utils/nutritionCalc.js";
 import { initDatePicker, parseRuDate } from "./datePicker.js";
+import { hasToken, updateProfile } from "../services/profileApi.js";
 
 export function initCalculator(root) {
   let goal = "MAINTAIN";
@@ -90,12 +91,13 @@ export function initCalculator(root) {
     return value === "" ? null : Number(value);
   }
 
+  // из поля приходит "дд.мм.гггг", расчёту и бэкенду нужен "гггг-мм-дд"
   function parseBirthDate(raw) {
     const text = String(raw ?? "").trim();
     if (text === "") return "";
     return parseRuDate(text) ?? "invalid";
   }
-  
+
   function readForm() {
     const data = new FormData(form);
     return {
@@ -116,6 +118,22 @@ export function initCalculator(root) {
     fieldNames.forEach((name) => showFieldError(name, errors[name]));
   }
 
+  function setStatus(message, type = "") {
+    const statusEl = resultEl.querySelector("[data-status]");
+    if (!statusEl) return;
+    statusEl.textContent = message;
+    statusEl.className =
+      "calc-result__status" + (type ? ` calc-result__status--${type}` : "");
+  }
+
+  function showLoginHint() {
+    const statusEl = resultEl.querySelector("[data-status]");
+    if (!statusEl) return;
+    statusEl.className = "calc-result__status";
+    statusEl.innerHTML =
+      'Чтобы сохранить нормы, <a href="#/login">войдите в аккаунт</a>';
+  }
+
   function renderResult(r) {
     resultEl.hidden = false;
     resultEl.innerHTML = `
@@ -128,7 +146,12 @@ export function initCalculator(root) {
       <p class="calc-result__note">
         Базовый обмен (BMR): ${r.bmr} ккал · с учётом активности (TDEE): ${r.tdee} ккал
       </p>
+      <button type="button" class="btn btn--wide calc-result__save" data-action="save">
+        Сохранить в профиль
+      </button>
+      <p class="calc-result__status" data-status role="status"></p>
     `;
+    if (!hasToken()) showLoginHint();
   }
 
   function recalc() {
@@ -154,6 +177,38 @@ export function initCalculator(root) {
     return true;
   }
 
+  async function saveToProfile(button) {
+    if (!lastInput || !lastResult) return;
+    if (!hasToken()) {
+      showLoginHint();
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Сохраняем...";
+    setStatus("");
+
+    try {
+      await updateProfile({
+        birthDate: lastInput.birthDate,
+        weight: lastInput.weight,
+        height: lastInput.height,
+        activityLevel: lastInput.activityLevel,
+        goal,
+        targetCalories: lastResult.calories,
+        targetProteins: lastResult.protein,
+        targetFats: lastResult.fat,
+        targetCarbs: lastResult.carbs,
+      });
+      setStatus("Нормы сохранены в профиль", "ok");
+    } catch (err) {
+      setStatus(err.message, "error");
+    } finally {
+      button.disabled = false;
+      button.textContent = "Сохранить в профиль";
+    }
+  }
+
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     submitted = true;
@@ -164,12 +219,18 @@ export function initCalculator(root) {
     }
   });
 
+  // результат перерисовывается, поэтому слушаем клик на контейнере
+  resultEl.addEventListener("click", (e) => {
+    const button = e.target.closest('[data-action="save"]');
+    if (button) saveToProfile(button);
+  });
+
   form.addEventListener("input", (e) => {
     if (submitted) {
       process();
       return;
     }
-  
+
     const name = e.target.name;
     if (fieldNames.includes(name) && e.target.classList.contains("is-invalid")) {
       showFieldError(name, validateInput(readForm())[name]);

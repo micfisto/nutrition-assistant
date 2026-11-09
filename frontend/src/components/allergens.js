@@ -89,7 +89,7 @@ export function initAllergens(root) {
   function showLoginHint() {
     statusEl.className = "allergens__status";
     statusEl.innerHTML =
-      'Выбор сохранён в браузере. Чтобы сохранить в профиль, <a href="/login.html">войдите в аккаунт</a>';
+      'Выбор сохранён в браузере. Чтобы сохранить в профиль, <a href="#/login">войдите в аккаунт</a>';
   }
 
   function refreshStatus() {
@@ -306,7 +306,7 @@ export function initAllergens(root) {
       );
     }
   });
-  
+
   saveBtn.addEventListener("click", save);
 
   load();
