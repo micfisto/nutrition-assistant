@@ -9,6 +9,7 @@ import {
   saveNorm,
 } from "./services/planStorage.js";
 import { fetchPlan, pushPlan } from "./services/plansApi.js";
+import { createFavoriteButton } from "./components/favoriteButton.js";
 
 const DAY_NAMES = {
   mon: "понедельник",
@@ -159,6 +160,9 @@ function renderCatalog() {
   listEl.innerHTML = "";
   lastRecipes.forEach((recipe) => {
     const card = createRecipeCard(recipe);
+    card
+      .querySelector(".recipe-card__image")
+      ?.appendChild(createFavoriteButton(recipe.id));
     card.addEventListener("click", () => openRecipeModal(recipe));
 
     const btn = document.createElement("button");

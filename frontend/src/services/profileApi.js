@@ -6,7 +6,7 @@ export function hasToken() {
   return Boolean(localStorage.getItem("token"));
 }
 
-async function request(path, options = {}) {
+export async function request(path, options = {}) {
   const token = localStorage.getItem("token");
   if (!token) throw new Error("Войдите в аккаунт");
 

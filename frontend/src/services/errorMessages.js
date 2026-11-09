@@ -50,6 +50,7 @@ export const errorMessages = {
   // General errors
   'INVALID_TARGET_CALORIES': 'Некорректное значение калорий (минимум 500)',
   'NO_SUITABLE_RECIPES': 'Не найдено подходящих рецептов',
+  'NOT_FOUND': 'Не найдено',
 
   // Default fallback
   'default': 'Произошла ошибка'

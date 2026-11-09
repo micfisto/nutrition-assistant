@@ -1,0 +1,53 @@
+/* ===== сердечко на карточке ===== */
+.recipe-card__image {
+  position: relative;
+}
+
+.fav-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--olive);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(31, 58, 34, 0.15);
+  transition:
+    transform 0.15s,
+    color 0.2s;
+}
+
+.fav-btn:hover {
+  transform: scale(1.1);
+  color: var(--garnet);
+}
+
+.fav-btn:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+.fav-btn svg {
+  fill: none;
+  transition: fill 0.2s;
+}
+
+.fav-btn.is-active {
+  color: var(--garnet);
+}
+
+.fav-btn.is-active svg {
+  fill: currentColor;
+}
+
+.fav-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
