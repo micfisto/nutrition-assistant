@@ -2,14 +2,19 @@ import { fetchRecipes } from "./services/recipesApi.js";
 import { renderDaysTabs } from "./components/daysTabs.js";
 import { createRecipeCard } from "./components/recipeCard.js";
 import { openRecipeModal } from "./components/recipeModal.js";
+import { fetchPlan, pushPlan } from "./services/plansApi.js";
+import { createFavoriteButton } from "./components/favoriteButton.js";
 import {
   loadPlan,
   savePlan,
   loadNorm,
   saveNorm,
+  getWeek,
+  setWeek,
+  getRepeat,
+  setRepeat,
 } from "./services/planStorage.js";
-import { fetchPlan, pushPlan } from "./services/plansApi.js";
-import { createFavoriteButton } from "./components/favoriteButton.js";
+import "./styles/Weeks.css";
 
 const DAY_NAMES = {
   mon: "понедельник",
@@ -49,6 +54,9 @@ const normFillEl = $("norm-fill");
 const normTextEl = $("norm-text");
 const normInput = $("norm-input");
 const saveNote = $("save-note");
+const weekTabsEl = $("week-tabs");
+const repeatEl = $("repeat-week");
+const weekNoteEl = $("week-note");
 
 let pushTimer;
 function persist() {
@@ -195,6 +203,38 @@ function renderAll() {
   renderCatalog();
 }
 
+/* ---------- Недели 1-4 и повтор ---------- */
+function reloadPlan() {
+  state.plan = loadPlan();
+  state.replacing = null;
+  renderWeeks();
+  renderAll();
+}
+
+function renderWeeks() {
+  const current = getWeek();
+  const repeat = getRepeat();
+
+  weekTabsEl.innerHTML = "";
+  for (let week = 1; week <= 4; week++) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "week-tab" + (week === current ? " active" : "");
+    button.textContent = `Неделя ${week}`;
+    button.addEventListener("click", () => {
+      setWeek(week);
+      reloadPlan();
+    });
+    weekTabsEl.appendChild(button);
+  }
+
+  repeatEl.checked = repeat;
+  weekNoteEl.textContent =
+    repeat && current > 1
+      ? "Эта неделя повторяет первую. Изменённые дни сохраняются отдельно."
+      : "";
+}
+
 /* ---------- Дни недели ---------- */
 function renderDay() {
   renderDaysTabs(tabsEl, state.activeDay, (dayId) => {
@@ -267,6 +307,11 @@ $("replace-cancel").addEventListener("click", () => {
   renderAll();
 });
 
+repeatEl.addEventListener("change", () => {
+  setRepeat(repeatEl.checked);
+  reloadPlan();
+});
+
 normInput.value = state.norm;
 normInput.addEventListener("change", () => {
   const value = Number(normInput.value);
@@ -284,6 +329,11 @@ $("save-btn").addEventListener("click", () => {
   saveNote.textContent = ok ? "Меню сохранено ✓" : "Не удалось сохранить";
   setTimeout(() => (saveNote.textContent = ""), 2000);
 });
+
+renderWeeks();
+renderDay();
+renderPlan();
+loadRecipes();
 
 renderDay();
 renderPlan();

@@ -1,0 +1,76 @@
+/* ===== переключатель недель ===== */
+.week-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  margin-bottom: 14px;
+}
+
+.week-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 5px;
+  border-radius: 999px;
+  background: var(--green-light);
+}
+
+.week-tab {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--olive);
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.week-tab:hover {
+  color: var(--green-dark);
+}
+
+.week-tab.active {
+  background: var(--green);
+  color: #fff;
+}
+
+.week-repeat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--olive);
+  cursor: pointer;
+}
+
+.week-repeat input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--green);
+  cursor: pointer;
+}
+
+.week-note {
+  min-height: 20px;
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--olive);
+}
+
+@media (max-width: 600px) {
+  .week-tabs {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .week-tab {
+    flex: 1;
+  }
+}
