@@ -12,7 +12,10 @@ import { errorHandler } from "./infrastructure/middlewares/errorHandler.js";
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  credentials: true
+}));
 app.use(express.json());
 
 app.use("/api/v1/recipes", recipeRouter);
