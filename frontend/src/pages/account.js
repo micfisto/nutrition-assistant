@@ -19,7 +19,7 @@ const DAYS = [
   ["sun", "Воскресенье"],
 ];
 
-const LOADING = '<p class="account__loading">Загрузка...</p>';
+const LOADING = '<div style="min-height: 400px;"></div>';
 
 function fmt(value, unit = "") {
   return value === null || value === undefined ? "—" : `${value}${unit}`;
@@ -299,9 +299,17 @@ function init() {
       tab.classList.toggle("is-active", active);
       tab.setAttribute("aria-selected", String(active));
     });
+    
     Object.entries(panels).forEach(([key, panel]) => {
-      panel.hidden = key !== name;
+      if (key === name) {
+        panel.style.display = "block";
+        panel.hidden = false;
+      } else {
+        panel.style.display = "none";
+        panel.hidden = true;
+      }
     });
+
     if (!loaded.has(name)) {
       loaded.add(name);
       loaders[name](panels[name]);
