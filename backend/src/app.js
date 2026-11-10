@@ -4,9 +4,11 @@ import cors from "cors";
 import { recipeRouter } from "./api/routes/recipeRoutes.js";
 import { authRouter } from "./api/routes/authRoutes.js";
 import { ingredientRouter } from "./api/routes/ingredientRoutes.js";
-import { errorHandler } from "./infrastructure/middlewares/errorHandler.js";
 import { profileRouter } from "./api/routes/profileRoutes.js";
 import { favoriteRouter } from "./api/routes/favoriteRoutes.js";
+import { healthRouter } from "./api/routes/healthRoutes.js";
+import { menuRouter } from "./api/routes/menuRoutes.js";
+import { errorHandler } from "./infrastructure/middlewares/errorHandler.js";
 
 const app = express();
 
@@ -18,6 +20,8 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/ingredients", ingredientRouter);
 app.use("/api/v1/profile", profileRouter);
 app.use("/api/v1/favorites", favoriteRouter);
+app.use("/api/v1/health", healthRouter);
+app.use("/api/v1/menu", menuRouter);
 
 app.use(errorHandler);
 

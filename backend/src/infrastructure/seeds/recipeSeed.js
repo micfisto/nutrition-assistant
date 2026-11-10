@@ -70,3 +70,16 @@ export const recipeSeed = [
     [banana, 100],
   ], null, ["snack"], null),
 ];
+
+export const seedRecipes = async (recipeRepo) => {
+  const existing = await recipeRepo.findAll();
+  if (existing.length > 0) {
+    console.log(`Seeds already loaded (${existing.length} recipes). Skipping...`);
+    return;
+  }
+
+  for (const recipe of recipeSeed) {
+    await recipeRepo.save(recipe);
+  }
+  console.log(`Seeded ${recipeSeed.length} recipes`);
+};
