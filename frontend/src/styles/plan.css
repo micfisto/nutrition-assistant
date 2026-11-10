@@ -336,3 +336,124 @@
     flex: 1;
   }
 }
+
+/* ===== Свой выпадающий список (зелёный) ===== */
+.native-hidden {
+  display: none !important;
+}
+
+.cselect {
+  position: relative;
+  width: 100%;
+}
+
+.cselect__btn {
+  position: relative;
+  width: 100%;
+  padding: 12px 40px 12px 14px;
+  border: 1px solid var(--timber);
+  border-radius: 12px;
+  background: var(--bg);
+  text-align: left;
+  font-size: 15px;
+  color: var(--raisin);
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    background-color 0.2s;
+}
+.cselect__btn::after {
+  content: "";
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--green);
+  border-bottom: 2px solid var(--green);
+  transform: translateY(-70%) rotate(45deg);
+  transition: transform 0.25s;
+}
+.cselect__btn:hover {
+  border-color: var(--green);
+}
+.cselect.open .cselect__btn {
+  border-color: var(--green);
+  background: #fff;
+  box-shadow: 0 0 0 3px var(--green-light);
+}
+.cselect.open .cselect__btn::after {
+  transform: translateY(-30%) rotate(-135deg);
+}
+
+.cselect__list {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 50;
+  max-height: 240px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  border: 1px solid var(--timber);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 14px 30px rgba(31, 58, 34, 0.18);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition:
+    opacity 0.2s,
+    transform 0.2s,
+    visibility 0.2s;
+}
+.cselect.open .cselect__list {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+.cselect__list li {
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 15px;
+  color: var(--raisin);
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+.cselect__list li:hover {
+  background: var(--green-light);
+}
+.cselect__list li.selected {
+  background: var(--green);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* поля калькулятора: белый фон как у остальных полей */
+.field .cselect__btn {
+  background: #fff;
+}
+
+/* месяц и год в календаре: компактный вид */
+.cselect--compact {
+  flex: 1;
+  min-width: 0;
+}
+.cselect--compact .cselect__btn {
+  padding: 7px 28px 7px 10px;
+  font-size: 14px;
+  font-weight: 600;
+  background: #fff;
+}
+.cselect--compact .cselect__btn::after {
+  right: 10px;
+}
+.cselect--compact .cselect__list {
+  min-width: 110px;
+  z-index: 60;
+}
