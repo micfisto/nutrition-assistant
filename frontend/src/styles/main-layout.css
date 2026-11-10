@@ -1,8 +1,17 @@
 html {
   scroll-behavior: smooth;
 }
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+img,
+svg {
+  max-width: 100%;
+}
 
-/* ===== Зелёный фон ===== */
+/* ===== Фон ===== */
 body {
   background:
     radial-gradient(1000px 600px at 0% 0%, #cfe0c0 0%, transparent 60%),
@@ -12,16 +21,66 @@ body {
   background-attachment: fixed;
 }
 
-/* ===== GRID: каркас страницы ===== */
+/* =========================================================
+   GRID 1: каркас страницы (шапка, контент, футер)
+   ========================================================= */
 .page {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "header"
+    "main"
+    "footer";
   gap: 32px;
   max-width: 1160px;
   margin: 0 auto;
   padding: 16px 24px 40px;
 }
+.site-header {
+  grid-area: header;
+}
+#app {
+  grid-area: main;
+  min-width: 0;
+}
+.site-footer {
+  grid-area: footer;
+}
 
+/* =========================================================
+   GRID 2: сетка главной (секции по областям)
+   ========================================================= */
+#view-home {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas:
+    "banner     banner"
+    "calculator calculator"
+    "goals      goals"
+    "allergens  allergens"
+    "menu       menu";
+  gap: 32px;
+}
+#banner {
+  grid-area: banner;
+}
+#calculator {
+  grid-area: calculator;
+}
+#goals {
+  grid-area: goals;
+}
+#allergens {
+  grid-area: allergens;
+}
+#menu {
+  grid-area: menu;
+}
+#view-home > * {
+  min-width: 0;
+}
+
+/* Плавное появление блоков при прокрутке (класс ставит ui.js) */
 .reveal {
   opacity: 0;
   transform: translateY(18px);
@@ -34,7 +93,9 @@ body {
   transform: none;
 }
 
-/* ===== FLEXBOX: шапка ===== */
+/* =========================================================
+   FLEXBOX 1: шапка и навигация
+   ========================================================= */
 .site-header {
   position: sticky;
   top: 12px;
@@ -42,6 +103,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
   padding: 10px 12px 10px 22px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.9);
@@ -49,7 +111,6 @@ body {
   backdrop-filter: blur(12px);
 }
 
-/* ===== Логотип ===== */
 .logo {
   display: flex;
   align-items: center;
@@ -84,7 +145,6 @@ body {
   background: rgba(255, 255, 255, 0.15);
 }
 
-/* ===== Навигация ===== */
 .nav {
   display: flex;
   align-items: center;
@@ -97,7 +157,6 @@ body {
   text-decoration: none;
   transition: color 0.2s;
 }
-
 .nav a:not(.nav__login) {
   position: relative;
   padding: 6px 0;
@@ -172,7 +231,9 @@ body {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
 }
 
-/* ===== Баннер ===== */
+/* =========================================================
+   FLEXBOX 2: баннер (колонка) и плашки статистики (ряд)
+   ========================================================= */
 .banner {
   position: relative;
   overflow: hidden;
@@ -245,6 +306,8 @@ body {
 
 .banner__stats {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 14px;
   margin: 36px 0 0;
   padding: 0;
@@ -300,8 +363,6 @@ body {
   background: var(--card);
   box-shadow: var(--shadow);
 }
-
-/* ===== Единый размер заголовков секций ===== */
 .menu-block > h2,
 .calc-section > h2,
 .slot h2 {
@@ -314,7 +375,9 @@ body {
   color: var(--raisin);
 }
 
-/* ===== Меню ===== */
+/* =========================================================
+   GRID 3: меню (блюда слева, итог справа)
+   ========================================================= */
 .day-title {
   margin: 0;
   font-size: 22px;
@@ -323,12 +386,13 @@ body {
 
 .menu-layout {
   display: grid;
-  grid-template-columns: 1fr 290px;
+  grid-template-columns: minmax(0, 1fr) 290px;
   gap: 28px;
   align-items: start;
   margin-top: 24px;
 }
 
+/* GRID 4: карточки каталога, число колонок подбирается само */
 .menu-block .recipe-catalog__list {
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   align-items: stretch;
@@ -344,7 +408,6 @@ body {
   border-radius: 24px;
   background: var(--green-light);
 }
-
 .day-total {
   display: flex;
   flex-direction: column;
@@ -364,7 +427,6 @@ body {
   color: var(--olive);
 }
 
-/* ===== Правки общих компонентов ===== */
 .days-tabs-container {
   background: var(--green-light);
   box-shadow: none;
@@ -384,7 +446,9 @@ body {
   color: var(--garnet);
 }
 
-/* ===== FLEXBOX: футер ===== */
+/* =========================================================
+   FLEXBOX 3: футер
+   ========================================================= */
 .site-footer {
   display: flex;
   flex-wrap: wrap;
@@ -404,7 +468,6 @@ body {
   font-size: 14px;
   line-height: 1.6;
 }
-
 .footer__col {
   display: flex;
   flex-direction: column;
@@ -429,7 +492,6 @@ body {
   color: #fff;
   transform: translateX(3px);
 }
-
 .footer__copy {
   flex: 1 1 100%;
   margin: 0;
@@ -439,20 +501,73 @@ body {
   color: var(--grullo);
 }
 
-/* ===== Планшет ===== */
+/* =========================================================
+   MEDIA 1: планшет (до 1024px) — сетка в одну колонку
+   ========================================================= */
 @media (max-width: 1024px) {
+  #view-home {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "banner"
+      "calculator"
+      "goals"
+      "allergens"
+      "menu";
+  }
   .menu-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .banner h1 {
     font-size: 42px;
   }
+  .calc-section,
+  .menu-block {
+    padding: 32px;
+  }
 }
 
-/* ===== Телефон ===== */
+/* =========================================================
+   MEDIA 2: большой телефон / малый планшет (до 768px)
+   ========================================================= */
+@media (max-width: 768px) {
+  .nav {
+    gap: 16px;
+  }
+  .nav a {
+    font-size: 14px;
+  }
+  .nav__login {
+    padding: 10px 18px;
+  }
+  .logo__text {
+    font-size: 19px;
+  }
+
+  .banner {
+    padding: 64px 20px 36px;
+  }
+  .banner h1 {
+    font-size: 34px;
+  }
+  .banner p {
+    font-size: 17px;
+  }
+
+  .site-footer {
+    padding: 32px;
+    gap: 24px 32px;
+  }
+}
+
+/* =========================================================
+   MEDIA 3: телефон (до 600px)
+   ========================================================= */
 @media (max-width: 600px) {
   .page {
     padding: 12px 14px 32px;
+    gap: 20px;
+  }
+  #view-home {
     gap: 20px;
   }
 
@@ -467,24 +582,19 @@ body {
     justify-content: center;
     gap: 8px 16px;
   }
-  .logo__text {
-    font-size: 19px;
-  }
 
   .banner {
-    padding: 52px 18px 28px;
+    padding: 48px 16px 28px;
     border-radius: 26px;
   }
   .banner h1 {
-    font-size: 30px;
+    font-size: 28px;
   }
   .banner p {
     font-size: 16px;
   }
   .banner__stats {
     gap: 8px;
-    flex-wrap: wrap;
-    justify-content: center;
   }
   .banner__stats li {
     min-width: 0;
@@ -508,12 +618,34 @@ body {
     font-size: 24px;
   }
   .menu-block .recipe-catalog__list {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .site-footer {
+    flex-direction: column;
     padding: 28px 22px;
     border-radius: 26px;
-    flex-direction: column;
+  }
+  .footer__brand {
+    max-width: none;
+  }
+}
+
+/* =========================================================
+   MEDIA 4: очень узкие экраны (до 380px)
+   ========================================================= */
+@media (max-width: 380px) {
+  .page {
+    padding: 10px 10px 28px;
+  }
+  .banner h1 {
+    font-size: 24px;
+  }
+  .banner__stats li {
+    flex: 1 1 100px;
+  }
+  .calc-section,
+  .menu-block {
+    padding: 18px 12px;
   }
 }

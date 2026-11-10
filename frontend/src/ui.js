@@ -1,4 +1,6 @@
-const blocks = document.querySelectorAll(".banner, .slot, .menu-block");
+const blocks = document.querySelectorAll(
+  ".banner, .slot, .calc-section, .menu-block",
+);
 blocks.forEach((el) => el.classList.add("reveal"));
 
 const observer = new IntersectionObserver(

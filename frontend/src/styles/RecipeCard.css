@@ -67,3 +67,15 @@
   font-weight: 600;
   color: var(--olive);
 }
+
+@media (max-width: 600px) {
+  .recipe-card__image {
+    height: 90px;
+  }
+  .recipe-card__title {
+    font-size: 16px;
+  }
+  .recipe-card__macros {
+    gap: 4px;
+  }
+}

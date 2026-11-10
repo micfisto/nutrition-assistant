@@ -90,3 +90,16 @@
   padding: 8px 0;
   border-bottom: 1px solid var(--timber);
 }
+
+@media (max-width: 600px) {
+  .modal__window {
+    padding: 20px 16px;
+    border-radius: 16px;
+  }
+  .modal__nutrients {
+    flex-wrap: wrap;
+  }
+  .modal__nutrients div {
+    flex: 1 1 40%;
+  }
+}
