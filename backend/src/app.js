@@ -9,13 +9,16 @@ import { favoriteRouter } from "./api/routes/favoriteRoutes.js";
 import { healthRouter } from "./api/routes/healthRoutes.js";
 import { menuRouter } from "./api/routes/menuRoutes.js";
 import { errorHandler } from "./infrastructure/middlewares/errorHandler.js";
+import { planRouter } from "./api/routes/planRoutes.js";
 
 const app = express();
 
-app.use(cors({
-  origin: '*',
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
 app.use("/api/v1/recipes", recipeRouter);
@@ -25,6 +28,7 @@ app.use("/api/v1/profile", profileRouter);
 app.use("/api/v1/favorites", favoriteRouter);
 app.use("/api/v1/health", healthRouter);
 app.use("/api/v1/menu", menuRouter);
+app.use("/api/v1/plans", planRouter);
 
 app.use(errorHandler);
 
