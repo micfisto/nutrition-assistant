@@ -29,5 +29,10 @@ export class InMemoryUserRepository {
     async save(user) {
         const data = UserMapper.toPersistence(user);
         this.#users.set(data.id, data);
+        console.log('User saved:', data.login, data.email);
+    }
+
+    async getAll() {
+        return Array.from(this.#users.values());
     }
 }

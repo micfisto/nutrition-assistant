@@ -1,4 +1,4 @@
-import {userRepository} from '../infrastructure/repositories/userRepository.js';
+import {userRepository} from '../infrastructure/repositories/UserRepository.js';
 import {User} from '../domain/entities/User.js';
 import {DomainError} from '../domain/errors/DomainError.js';
 import {UserErrors} from '../domain/errors/UserErrors.js';
@@ -82,20 +82,26 @@ export class UserService {
     }
 
     async validateUserForLogin(loginOrEmail) {
+        console.log('Looking for user with:', loginOrEmail);
         let user = await userRepository.findByLogin(loginOrEmail);
-        
+        console.log('Found by login:', !!user);
+
         if (!user) {
             user = await userRepository.findByEmail(loginOrEmail);
+            console.log('Found by email:', !!user);
         }
 
         if (!user) {
+            console.log('User not found');
             throw new DomainError(UserErrors.NotFound);
         }
 
         if (user.status !== 'ACTIVE') {
+            console.log('User not active, status:', user.status);
             throw new DomainError(UserErrors.NotActive);
         }
 
+        console.log('User validated:', user.login, user.email, user.status);
         return user;
     }
 
