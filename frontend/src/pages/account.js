@@ -3,11 +3,11 @@ import { getUser, isAuthenticated, logout } from "../services/authApi.js";
 import { getProfile } from "../services/profileApi.js";
 import { getFavorites, removeFavorite } from "../services/favoritesApi.js";
 import { fetchRecipes } from "../services/recipesApi.js";
-import { loadPlan } from "../services/planStorage.js";
 import { createRecipeCard } from "../components/recipeCard.js";
 import { openRecipeModal } from "../components/recipeModal.js";
 import { ACTIVITY_LEVELS, GOALS, calcAge } from "../utils/nutritionCalc.js";
 import { syncFavorites } from "../components/favoriteButton.js";
+import { loadPlan, getWeek } from "../services/planStorage.js";
 
 const DAYS = [
   ["mon", "Понедельник"],
@@ -186,7 +186,7 @@ function renderPlans(panel, plan, byId) {
 
   const caption = document.createElement("p");
   caption.className = "account__caption";
-  caption.textContent = "Меню на неделю, сохранённое в этом браузере.";
+  caption.textContent = `Неделя ${getWeek()}. Меню, сохранённое в этом браузере.`;
   panel.appendChild(caption);
 
   const grid = document.createElement("div");
