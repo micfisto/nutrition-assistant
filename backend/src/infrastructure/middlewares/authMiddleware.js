@@ -13,7 +13,8 @@ export function authMiddleware(req, res, next) {
   const token = authHeader.split(' ')[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const secret = process.env.JWT_SECRET || 'dev-secret-key-change-in-production';
+    const decoded = jwt.verify(token, secret);
     req.userId = decoded.id;
     next();
   } catch (err) {

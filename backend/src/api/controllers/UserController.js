@@ -2,16 +2,20 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { userService } from '../../services/UserService.js';
 import { userProfileService } from '../../services/UserProfileService.js';
-import { userRepository } from '../../infrastructure/repositories/userRepository.js';
+import { userRepository } from '../../infrastructure/repositories/UserRepository.js';
 import { DomainError } from '../../domain/errors/DomainError.js';
 
 const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || '24h' });
+  const secret = process.env.JWT_SECRET || 'dev-secret-key-change-in-production';
+  return jwt.sign({ id: userId }, secret, { expiresIn: process.env.JWT_EXPIRES_IN || '24h' });
 };
 
 export async function register(req, res, next) {
   try {
     const { login, username, email, password, birthDate, weight, height, activityLevel, goal, allergenIds } = req.body;
+
+    // Преобразуем activityLevel в число, если оно пришло как строка
+    const activityLevelNum = typeof activityLevel === 'string' ? parseFloat(activityLevel) : activityLevel;
 
     if (!login || !username || !email || !password) {
       throw new DomainError('USER_LOGIN_EMPTY');
@@ -40,7 +44,7 @@ export async function register(req, res, next) {
       birthDate,
       weight,
       height,
-      activityLevel,
+      activityLevel: activityLevelNum,
       goal,
       allergenIds: allergenIds || [],
       favoriteRecipeIds: []
@@ -54,16 +58,22 @@ export async function register(req, res, next) {
 
 export async function login(req, res, next) {
   try {
+    console.log('Login request body:', req.body);
     const { loginOrEmail, password } = req.body;
 
+    console.log('Extracted loginOrEmail:', loginOrEmail, 'password:', password ? '***' : 'missing');
+
     if (!loginOrEmail || !password) {
+      console.log('Missing credentials');
       throw new DomainError('INVALID_CREDENTIALS');
     }
 
     const user = await userService.validateUserForLogin(loginOrEmail);
     const userData = user.toJSON();
 
+    console.log('User found, comparing password');
     const isMatch = await bcrypt.compare(password, userData.passwordHash);
+    console.log('Password match:', isMatch);
 
     if (!isMatch) {
       throw new DomainError('INVALID_CREDENTIALS');
@@ -81,6 +91,7 @@ export async function login(req, res, next) {
       }
     });
   } catch (err) {
+    console.log('Login error:', err);
     next(err);
   }
 }
