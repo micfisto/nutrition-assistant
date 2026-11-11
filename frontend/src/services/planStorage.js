@@ -124,18 +124,7 @@ export function setRepeat(flag) {
 
   if (next) {
     [2, 3, 4].forEach((week) => {
-      const own = {};
-      DAY_IDS.forEach((day) => {
-        const ids = data.weeks[week][day];
-        if (
-          Array.isArray(ids) &&
-          ids.length > 0 &&
-          !sameDay(ids, data.weeks[1][day])
-        ) {
-          own[day] = ids;
-        }
-      });
-      data.weeks[week] = own;
+      data.weeks[week] = {};
     });
   } else {
     [2, 3, 4].forEach((week) => {
@@ -145,6 +134,22 @@ export function setRepeat(flag) {
 
   data.repeat = next;
   writeData(data);
+}
+
+export function hasCustomWeeks() {
+  const data = readData();
+  if (data.repeat) return false;
+
+  return [2, 3, 4].some((week) =>
+    DAY_IDS.some((day) => {
+      const ids = data.weeks[week][day];
+      return (
+        Array.isArray(ids) &&
+        ids.length > 0 &&
+        !sameDay(ids, data.weeks[1][day])
+      );
+    }),
+  );
 }
 
 /* Норма калорий */

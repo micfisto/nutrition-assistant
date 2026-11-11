@@ -13,6 +13,7 @@ import {
   setWeek,
   getRepeat,
   setRepeat,
+  hasCustomWeeks,
 } from "./services/planStorage.js";
 import "./styles/Weeks.css";
 
@@ -34,10 +35,10 @@ const state = {
   mealType: "",
   plan: loadPlan(),
   norm: loadNorm(),
-  replacing: null, // { day, index } пока выбираем блюдо для замены
+  replacing: null,
 };
 
-const byId = new Map(); // все загруженные рецепты по id
+const byId = new Map();
 let lastRecipes = [];
 
 const $ = (id) => document.getElementById(id);
@@ -308,6 +309,14 @@ $("replace-cancel").addEventListener("click", () => {
 });
 
 repeatEl.addEventListener("change", () => {
+  if (
+    repeatEl.checked &&
+    hasCustomWeeks() &&
+    !confirm("Меню недель 2–4 будет заменено повтором первой недели. Продолжить?")
+  ) {
+    repeatEl.checked = false;
+    return;
+  }
   setRepeat(repeatEl.checked);
   reloadPlan();
 });
