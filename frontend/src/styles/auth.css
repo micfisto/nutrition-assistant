@@ -1,7 +1,3 @@
-[hidden] {
-  display: none !important;
-}
-
 #app {
   display: block;
 }
@@ -89,6 +85,70 @@
 .auth-module a {
   font-weight: 600;
   color: var(--green-dark);
+}
+
+/* Фикс для календаря в форме регистрации */
+.auth-module .datepicker {
+  position: relative;
+}
+.auth-module .datepicker__popup {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 100; /* Чтобы был поверх других элементов */
+}
+
+/* поле с календарём, ряд «вес / рост» и селекты в форме регистрации */
+.auth-module .field {
+  flex: none;
+}
+
+.auth-module .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.auth-module .field .datepicker__input {
+  padding: 13px 46px 13px 14px;
+  background: var(--bg);
+}
+
+.auth-module .field .datepicker__input:focus {
+  background: #fff;
+}
+
+.auth-module select {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid var(--timber);
+  border-radius: 12px;
+  background: var(--bg);
+  font-size: 15px;
+  color: var(--raisin);
+}
+
+/* Скрываем главную страницу, когда открыта форма */
+#view-home[hidden] {
+  display: none !important;
+}
+
+/* Форма авторизации должна занимать всё место */
+#view-auth {
+  display: block;
+  width: 100%;
+}
+
+/* Убираем лишние отступы у body, если они есть */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+@media (max-width: 400px) {
+  .auth-module .form-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 600px) {
