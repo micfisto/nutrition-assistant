@@ -1,6 +1,8 @@
 import loginHtml from "./pages/login.html?raw";
 import registerHtml from "./pages/register.html?raw";
 import accountHtml from "./pages/account.html?raw";
+import aboutHtml from "./pages/about.html?raw";
+import page404Html from "./pages/404.html?raw";
 import { isAuthenticated, logout } from "./services/authApi.js";
 
 const home = document.getElementById("view-home");
@@ -10,6 +12,7 @@ const PAGES = {
   "#/login": { html: loginHtml, script: "/src/pages/login.js" },
   "#/register": { html: registerHtml, script: "/src/pages/register.js" },
   "#/account": { html: accountHtml, script: "/src/pages/account.js" },
+  "#/about": { html: aboutHtml, script: null },
 };
 
 const LINK_MAP = {
@@ -42,13 +45,22 @@ async function showAuth(page) {
   });
 
   window.scrollTo({ top: 0 });
-  await import(/* @vite-ignore */ `${page.script}?v=${Date.now()}`);
+  if (page.script) {
+    await import(/* @vite-ignore */ `${page.script}?v=${Date.now()}`);
+  }
+}
+
+function showNotFound() {
+  home.hidden = true;
+  auth.hidden = false;
+  auth.innerHTML = page404Html;
 }
 
 function route() {
   const hash = window.location.hash;
   const page = PAGES[hash];
   if (page) showAuth(page);
+  else if (hash && hash.startsWith("#/")) showNotFound();
   else showHome(hash);
 }
 

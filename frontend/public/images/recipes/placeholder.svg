@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="300" fill="#e2eeda"/>
+  <text x="150" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#5b6b52">Фото блюда</text>
+  <text x="150" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#8a3b33">[IMAGE_PLACEHOLDER]</text>
+</svg>
