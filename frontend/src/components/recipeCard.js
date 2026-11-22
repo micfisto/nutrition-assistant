@@ -1,11 +1,3 @@
-const EMOJI = {
-  "rec-oatmeal": "🥣",
-  "rec-omelette": "🍳",
-  "rec-chicken-rice": "🍗",
-  "rec-salmon": "🐟",
-  "rec-yogurt": "🍌",
-};
-
 export function createRecipeCard(recipe) {
   const n = recipe.nutrientsPerServing;
 
@@ -18,9 +10,14 @@ export function createRecipeCard(recipe) {
     const img = document.createElement("img");
     img.src = recipe.imageUrl;
     img.alt = recipe.title;
+    img.loading = "lazy";
+    img.onerror = () => {
+      img.onerror = null;
+      img.src = "/images/recipes/placeholder.svg";
+    };
     image.appendChild(img);
   } else {
-    image.textContent = EMOJI[recipe.id] || "🍽️";
+    image.textContent = "🍽️";
   }
 
   const body = document.createElement("div");

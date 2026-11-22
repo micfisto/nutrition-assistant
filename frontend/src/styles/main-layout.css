@@ -435,10 +435,7 @@ body {
 .recipe-card {
   box-shadow: var(--shadow);
 }
-.recipe-card__image {
-  height: 100px;
-  background: var(--green-light);
-}
+
 .recipe-card__title {
   font-family: var(--font-head);
 }
