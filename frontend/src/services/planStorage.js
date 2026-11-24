@@ -117,6 +117,11 @@ export function getRepeat() {
   return readData().repeat;
 }
 
+export function loadWeekPlan(week) {
+  const data = readData();
+  return resolve(data, WEEKS.includes(week) ? week : data.week);
+}
+
 export function setRepeat(flag) {
   const data = readData();
   const next = Boolean(flag);

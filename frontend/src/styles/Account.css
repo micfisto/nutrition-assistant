@@ -280,6 +280,20 @@
   transition: opacity 0.2s ease-in-out;
 }
 
+/* переключатель недель на вкладке «Мои планы» */
+.plans-weeks {
+  width: fit-content;
+  max-width: 100%;
+  margin-bottom: 16px;
+  overflow-x: auto;
+}
+
+@media (max-width: 600px) {
+  .plans-weeks {
+    width: 100%;
+  }
+}
+
 @media (max-width: 800px) {
   .norm-cards {
     grid-template-columns: repeat(3, 1fr);

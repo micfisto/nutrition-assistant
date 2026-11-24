@@ -7,7 +7,8 @@ import { createRecipeCard } from "../components/recipeCard.js";
 import { openRecipeModal } from "../components/recipeModal.js";
 import { ACTIVITY_LEVELS, GOALS, calcAge } from "../utils/nutritionCalc.js";
 import { syncFavorites } from "../components/favoriteButton.js";
-import { loadPlan, getWeek } from "../services/planStorage.js";
+import { loadWeekPlan, getWeek, getRepeat } from "../services/planStorage.js";
+import "../styles/Weeks.css";
 
 const DAYS = [
   ["mon", "Понедельник"],
@@ -170,23 +171,43 @@ async function loadFavorites(panel) {
 }
 
 /* ---------- Вкладка «Мои планы» ---------- */
-function renderPlans(panel, plan, byId) {
+/* ---------- Вкладка «Мои планы» ---------- */
+function renderPlans(panel, byId, week) {
   panel.innerHTML = "";
 
+  // переключатель недель
+  const bar = document.createElement("div");
+  bar.className = "week-tabs plans-weeks";
+  for (let w = 1; w <= 4; w++) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "week-tab" + (w === week ? " active" : "");
+    button.textContent = `Неделя ${w}`;
+    button.addEventListener("click", () => renderPlans(panel, byId, w));
+    bar.appendChild(button);
+  }
+  panel.appendChild(bar);
+
+  const plan = loadWeekPlan(week);
   const hasDishes = DAYS.some(([id]) => (plan[id] ?? []).length > 0);
+
   if (!hasDishes) {
-    panel.innerHTML = `
-      <div class="account__empty">
-        <p>Меню ещё не составлено.</p>
-        <a class="btn" href="#menu">Собрать меню</a>
-      </div>
+    const empty = document.createElement("div");
+    empty.className = "account__empty";
+    empty.innerHTML = `
+      <p>${week === 1 ? "Меню ещё не составлено." : "На этой неделе меню пока пусто."}</p>
+      <a class="btn" href="#menu">Собрать меню</a>
     `;
+    panel.appendChild(empty);
     return;
   }
 
   const caption = document.createElement("p");
   caption.className = "account__caption";
-  caption.textContent = `Неделя ${getWeek()}. Меню, сохранённое в этом браузере.`;
+  caption.textContent =
+    getRepeat() && week > 1
+      ? "Эта неделя повторяет первую, изменённые дни показаны отдельно. Меню сохранено в этом браузере."
+      : "Меню, сохранённое в этом браузере.";
   panel.appendChild(caption);
 
   const grid = document.createElement("div");
@@ -213,10 +234,10 @@ function renderPlans(panel, plan, byId) {
     const list = document.createElement("ul");
     list.className = "plan-day__list";
     if (recipes.length === 0) {
-      const empty = document.createElement("li");
-      empty.className = "plan-day__empty";
-      empty.textContent = "Блюд нет";
-      list.appendChild(empty);
+      const emptyItem = document.createElement("li");
+      emptyItem.className = "plan-day__empty";
+      emptyItem.textContent = "Блюд нет";
+      list.appendChild(emptyItem);
     }
     recipes.forEach((recipe) => {
       const item = document.createElement("li");
@@ -255,14 +276,7 @@ async function loadPlans(panel) {
     return;
   }
 
-  let plan = {};
-  try {
-    plan = loadPlan() ?? {};
-  } catch {
-    plan = {};
-  }
-
-  renderPlans(panel, plan, new Map(recipes.map((r) => [r.id, r])));
+  renderPlans(panel, new Map(recipes.map((r) => [r.id, r])), getWeek());
 }
 
 /* ---------- Запуск страницы ---------- */
