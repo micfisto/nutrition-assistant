@@ -37,6 +37,7 @@ export function openRecipeModal(recipe) {
   const n = recipe.nutrientsPerServing;
 
   content.innerHTML = `
+    <div class="modal__photo-box"></div>
     <h2 class="modal__title"></h2>
     <p class="modal__desc"></p>
     <div class="modal__nutrients">
@@ -50,6 +51,18 @@ export function openRecipeModal(recipe) {
     <ul class="modal__ingredients"></ul>
     <div class="modal__steps"></div>
   `;
+
+  const photoBox = content.querySelector(".modal__photo-box");
+  if (recipe.imageUrl) {
+    const img = document.createElement("img");
+    img.className = "modal__photo";
+    img.src = recipe.imageUrl;
+    img.alt = recipe.title;
+    img.onerror = () => photoBox.remove();
+    photoBox.appendChild(img);
+  } else {
+    photoBox.remove();
+  }
 
   content.querySelector(".modal__title").textContent = recipe.title;
   content.querySelector(".modal__desc").textContent = recipe.description || "";
@@ -65,9 +78,9 @@ export function openRecipeModal(recipe) {
     list.appendChild(li);
   });
 
-  const steps = recipe.instructions || recipe.cookingMethod || recipe.steps;
+  const steps = recipe.cookingMethod || recipe.instructions || recipe.steps;
+  const box = content.querySelector(".modal__steps");
   if (steps) {
-    const box = content.querySelector(".modal__steps");
     const title = document.createElement("h3");
     title.textContent = "Приготовление";
     const text = document.createElement("p");
