@@ -7,13 +7,11 @@ const WEEKS = [1, 2, 3, 4];
 /*
   Формат хранения:
   {
-    week: 1,          выбранная неделя
-    repeat: false,    повторять первую неделю
+    week: 1,                          выбранная неделя
+    sources: { 2: null, 3: 1, 4: 2 }  какую неделю повторяет каждая (только более раннюю)
     weeks: {
-      1: { mon: [...], ... },  полный план первой недели
-      2: { ... },              без повтора: полный план
-      3: { ... },              с повтором: только изменённые дни
-      4: { ... }
+      1: { mon: [...], ... },         неделя без источника: полный план
+      3: { tue: [...] }               неделя с источником: только изменённые дни
     }
   }
 */
@@ -23,17 +21,27 @@ function emptyPlan() {
 }
 
 function emptyData() {
-  return { week: 1, repeat: false, weeks: { 1: emptyPlan(), 2: {}, 3: {}, 4: {} } };
+  return {
+    week: 1,
+    sources: { 2: null, 3: null, 4: null },
+    weeks: { 1: emptyPlan(), 2: {}, 3: {}, 4: {} },
+  };
 }
 
 function normalize(parsed) {
   const data = emptyData();
   data.week = WEEKS.includes(parsed?.week) ? parsed.week : 1;
-  data.repeat = Boolean(parsed?.repeat);
   data.weeks[1] = { ...emptyPlan(), ...(parsed?.weeks?.[1] ?? {}) };
+
   [2, 3, 4].forEach((week) => {
     data.weeks[week] = { ...(parsed?.weeks?.[week] ?? {}) };
+
+    // старый формат хранил один флажок «повторять первую неделю»
+    const raw = parsed?.sources ? parsed.sources[week] : parsed?.repeat ? 1 : null;
+    const source = Number(raw);
+    data.sources[week] = source >= 1 && source < week ? source : null;
   });
+
   return data;
 }
 
@@ -42,6 +50,7 @@ function readData() {
     const raw = localStorage.getItem(PLAN_KEY);
     if (raw) return normalize(JSON.parse(raw));
 
+    // меню, сохранённое самой первой версией, становится неделей 1
     const old = localStorage.getItem(OLD_PLAN_KEY);
     if (old) {
       const data = emptyData();
@@ -49,6 +58,7 @@ function readData() {
       return data;
     }
   } catch {
+    /* повреждённые данные игнорируем */
   }
   return emptyData();
 }
@@ -66,17 +76,25 @@ function sameDay(a, b) {
   return a.length === b.length && a.every((id, i) => id === b[i]);
 }
 
+// итоговый план недели с учётом цепочки повторов
 function resolve(data, week) {
-  if (data.repeat && week > 1) {
-    return { ...data.weeks[1], ...data.weeks[week] };
+  const source = data.sources[week];
+  if (source) {
+    return { ...resolve(data, source), ...data.weeks[week] };
   }
   return { ...emptyPlan(), ...data.weeks[week] };
 }
 
-/* Меню выбранной недели */
+/* ---------- Меню выбранной недели ---------- */
 export function loadPlan() {
   const data = readData();
   return resolve(data, data.week);
+}
+
+// меню любой недели для просмотра (выбранную неделю не меняет)
+export function loadWeekPlan(week) {
+  const data = readData();
+  return resolve(data, WEEKS.includes(week) ? week : data.week);
 }
 
 export function savePlan(plan) {
@@ -88,10 +106,13 @@ export function savePlan(plan) {
     clean[day] = Array.isArray(plan?.[day]) ? plan[day] : [];
   });
 
-  if (data.repeat && week > 1) {
+  const source = data.sources[week];
+  if (source) {
+    // сохраняем только дни, которые отличаются от недели-источника
+    const base = resolve(data, source);
     const overrides = {};
     DAY_IDS.forEach((day) => {
-      if (!sameDay(clean[day], data.weeks[1][day])) overrides[day] = clean[day];
+      if (!sameDay(clean[day], base[day])) overrides[day] = clean[day];
     });
     data.weeks[week] = overrides;
   } else {
@@ -101,7 +122,7 @@ export function savePlan(plan) {
   return writeData(data);
 }
 
-/* Недели и повтор  */
+/* ---------- Недели и повторы ---------- */
 export function getWeek() {
   return readData().week;
 }
@@ -113,51 +134,49 @@ export function setWeek(week) {
   writeData(data);
 }
 
-export function getRepeat() {
-  return readData().repeat;
+// какую неделю повторяет данная (или null)
+export function getSource(week) {
+  return readData().sources[week] ?? null;
 }
 
-export function loadWeekPlan(week) {
-  const data = readData();
-  return resolve(data, WEEKS.includes(week) ? week : data.week);
+export function getSources() {
+  return { ...readData().sources };
 }
 
-export function setRepeat(flag) {
+// source: номер более ранней недели или null, чтобы не повторять
+export function setSource(week, source) {
+  if (![2, 3, 4].includes(week)) return;
+
   const data = readData();
-  const next = Boolean(flag);
-  if (next === data.repeat) return;
+  const next = source >= 1 && source < week ? source : null;
+  if (next === data.sources[week]) return;
 
   if (next) {
-    [2, 3, 4].forEach((week) => {
-      data.weeks[week] = {};
-    });
+    // неделя копирует выбранную, собственные изменения сбрасываются
+    data.weeks[week] = {};
   } else {
-    [2, 3, 4].forEach((week) => {
-      data.weeks[week] = resolve(data, week);
-    });
+    // повтор выключен: неделя остаётся самостоятельной копией
+    data.weeks[week] = resolve(data, week);
   }
 
-  data.repeat = next;
+  data.sources[week] = next;
   writeData(data);
 }
 
-export function hasCustomWeeks() {
-  const data = readData();
-  if (data.repeat) return false;
+// есть ли у недели свои блюда, которые повтор заменит
+export function wouldReplaceCustom(week, source) {
+  if (!source) return false;
 
-  return [2, 3, 4].some((week) =>
-    DAY_IDS.some((day) => {
-      const ids = data.weeks[week][day];
-      return (
-        Array.isArray(ids) &&
-        ids.length > 0 &&
-        !sameDay(ids, data.weeks[1][day])
-      );
-    }),
+  const data = readData();
+  const current = resolve(data, week);
+  const base = resolve(data, source);
+
+  return DAY_IDS.some(
+    (day) => current[day].length > 0 && !sameDay(current[day], base[day]),
   );
 }
 
-/* Норма калорий */
+/* ---------- Норма калорий ---------- */
 export function loadNorm() {
   try {
     const value = Number(localStorage.getItem(NORM_KEY));
@@ -171,5 +190,6 @@ export function saveNorm(value) {
   try {
     localStorage.setItem(NORM_KEY, String(value));
   } catch {
+    /* хранилище недоступно, не страшно */
   }
 }

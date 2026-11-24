@@ -7,7 +7,7 @@ import { createRecipeCard } from "../components/recipeCard.js";
 import { openRecipeModal } from "../components/recipeModal.js";
 import { ACTIVITY_LEVELS, GOALS, calcAge } from "../utils/nutritionCalc.js";
 import { syncFavorites } from "../components/favoriteButton.js";
-import { loadWeekPlan, getWeek, getRepeat } from "../services/planStorage.js";
+import { loadWeekPlan, getWeek, getSource } from "../services/planStorage.js";
 import "../styles/Weeks.css";
 
 const DAYS = [
@@ -204,10 +204,10 @@ function renderPlans(panel, byId, week) {
 
   const caption = document.createElement("p");
   caption.className = "account__caption";
-  caption.textContent =
-    getRepeat() && week > 1
-      ? "Эта неделя повторяет первую, изменённые дни показаны отдельно. Меню сохранено в этом браузере."
-      : "Меню, сохранённое в этом браузере.";
+  const source = getSource(week);
+  caption.textContent = source
+    ? `Эта неделя повторяет неделю ${source}, изменённые дни показаны отдельно. Меню сохранено в этом браузере.`
+    : "Меню, сохранённое в этом браузере.";
   panel.appendChild(caption);
 
   const grid = document.createElement("div");

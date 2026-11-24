@@ -74,3 +74,25 @@
     flex: 1;
   }
 }
+
+/* выбор недели-источника */
+.week-repeat[hidden] {
+  display: none;
+}
+
+.week-repeat select {
+  padding: 8px 12px;
+  border: 1px solid var(--timber);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--raisin);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.week-tab__src {
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.8;
+}

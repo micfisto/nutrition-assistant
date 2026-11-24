@@ -11,9 +11,9 @@ import {
   saveNorm,
   getWeek,
   setWeek,
-  getRepeat,
-  setRepeat,
-  hasCustomWeeks,
+  getSources,
+  setSource,
+  wouldReplaceCustom,
 } from "./services/planStorage.js";
 import "./styles/Weeks.css";
 
@@ -56,16 +56,21 @@ const normTextEl = $("norm-text");
 const normInput = $("norm-input");
 const saveNote = $("save-note");
 const weekTabsEl = $("week-tabs");
-const repeatEl = $("repeat-week");
+const repeatBoxEl = $("repeat-box");
+const repeatSelectEl = $("repeat-source");
 const weekNoteEl = $("week-note");
+
+// сервер пока хранит только первую неделю, поэтому отправляем только её
+function pushToServer() {
+  if (getWeek() !== 1) return;
+  pushPlan(state.plan).catch(() => {});
+}
 
 let pushTimer;
 function persist() {
   savePlan(state.plan);
   clearTimeout(pushTimer);
-  pushTimer = setTimeout(() => {
-    pushPlan(state.plan).catch(() => {});
-  }, 400);
+  pushTimer = setTimeout(pushToServer, 400);
 }
 
 function dayRecipes() {
@@ -204,7 +209,7 @@ function renderAll() {
   renderCatalog();
 }
 
-/* ---------- Недели 1-4 и повтор ---------- */
+/* ---------- Недели 1-4 и повторы ---------- */
 function reloadPlan() {
   state.plan = loadPlan();
   state.replacing = null;
@@ -214,7 +219,7 @@ function reloadPlan() {
 
 function renderWeeks() {
   const current = getWeek();
-  const repeat = getRepeat();
+  const sources = getSources();
 
   weekTabsEl.innerHTML = "";
   for (let week = 1; week <= 4; week++) {
@@ -222,6 +227,12 @@ function renderWeeks() {
     button.type = "button";
     button.className = "week-tab" + (week === current ? " active" : "");
     button.textContent = `Неделя ${week}`;
+    if (sources[week]) {
+      const mark = document.createElement("small");
+      mark.className = "week-tab__src";
+      mark.textContent = ` ↻${sources[week]}`;
+      button.appendChild(mark);
+    }
     button.addEventListener("click", () => {
       setWeek(week);
       reloadPlan();
@@ -229,11 +240,26 @@ function renderWeeks() {
     weekTabsEl.appendChild(button);
   }
 
-  repeatEl.checked = repeat;
-  weekNoteEl.textContent =
-    repeat && current > 1
-      ? "Эта неделя повторяет первую. Изменённые дни сохраняются отдельно."
-      : "";
+  // выбор недели, которую повторяет текущая (у первой недели его нет)
+  repeatBoxEl.hidden = current === 1;
+  repeatSelectEl.innerHTML = "";
+  repeatSelectEl.add(new Option("Не повторять", ""));
+  for (let s = 1; s < current; s++) {
+    repeatSelectEl.add(new Option(`Неделя ${s}`, String(s)));
+  }
+  repeatSelectEl.value = sources[current] ? String(sources[current]) : "";
+
+  const notes = [];
+  if (current > 1 && sources[current]) {
+    notes.push(
+      `Эта неделя повторяет неделю ${sources[current]}. Изменённые дни сохраняются отдельно.`,
+    );
+  }
+  const followers = [2, 3, 4].filter((week) => sources[week] === current);
+  if (followers.length > 0) {
+    notes.push(`Эту неделю повторяют: ${followers.join(", ")}.`);
+  }
+  weekNoteEl.textContent = notes.join(" ");
 }
 
 /* ---------- Дни недели ---------- */
@@ -267,8 +293,14 @@ async function loadRecipes() {
 
 /* ---------- Синхронизация плана с сервером (только для вошедших) ---------- */
 async function syncFromServer() {
+  // сервер хранит только первую неделю
+  if (getWeek() !== 1) return;
+
   try {
     const remote = await fetchPlan();
+    // за время запроса пользователь мог переключить неделю
+    if (getWeek() !== 1) return;
+
     const week1 = remote && remote.weeks && remote.weeks[1];
     if (week1) {
       state.plan = { ...state.plan, ...week1 };
@@ -308,16 +340,22 @@ $("replace-cancel").addEventListener("click", () => {
   renderAll();
 });
 
-repeatEl.addEventListener("change", () => {
+repeatSelectEl.addEventListener("change", () => {
+  const week = getWeek();
+  const source = repeatSelectEl.value ? Number(repeatSelectEl.value) : null;
+
   if (
-    repeatEl.checked &&
-    hasCustomWeeks() &&
-    !confirm("Меню недель 2–4 будет заменено повтором первой недели. Продолжить?")
+    source &&
+    wouldReplaceCustom(week, source) &&
+    !confirm(
+      `Меню недели ${week} будет заменено повтором недели ${source}. Продолжить?`,
+    )
   ) {
-    repeatEl.checked = false;
+    renderWeeks(); // вернуть прежнее значение списка
     return;
   }
-  setRepeat(repeatEl.checked);
+
+  setSource(week, source);
   reloadPlan();
 });
 
@@ -334,16 +372,13 @@ normInput.addEventListener("change", () => {
 
 $("save-btn").addEventListener("click", () => {
   const ok = savePlan(state.plan);
-  pushPlan(state.plan).catch(() => {});
+  pushToServer();
   saveNote.textContent = ok ? "Меню сохранено ✓" : "Не удалось сохранить";
   setTimeout(() => (saveNote.textContent = ""), 2000);
 });
 
+/* ---------- Запуск ---------- */
 renderWeeks();
-renderDay();
-renderPlan();
-loadRecipes();
-
 renderDay();
 renderPlan();
 loadRecipes().then(syncFromServer);
