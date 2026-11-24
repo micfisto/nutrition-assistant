@@ -1,11 +1,10 @@
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = path.dirname(".");
 const recipesRepoPath = path.resolve(
   __dirname,
-  "../infrastructure/repositories/recipeRepository.js"
+  "../src/infrastructure/repositories/recipeRepository.js"
 );
 const { recipeRepository } = await import(recipesRepoPath);
 

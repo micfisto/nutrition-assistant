@@ -21,6 +21,23 @@ const salmon = ing("ing-salmon", "Лосось", 208, 20, 13, 0);
 const potato = ing("ing-potato", "Картофель", 77, 2, 0.1, 17);
 const yogurt = ing("ing-yogurt", "Йогурт натуральный", 59, 10, 0.4, 3.6);
 const banana = ing("ing-banana", "Банан", 89, 1.1, 0.3, 23);
+const tomato = ing("ing-tomato", "Помидор", 18, 0.9, 0.2, 3.9);
+const bread = ing("ing-bread", "Зёрновой хлеб", 250, 9, 3, 45);
+const cheese = ing("ing-cheese", "Сыр 30%", 260, 22, 18, 2);
+const semolina = ing("ing-semolina", "Манная крупа", 360, 10, 1, 74);
+const pasta = ing("ing-pasta", "Лапша яичная", 371, 13, 1.5, 75);
+const carrot = ing("ing-carrot", "Морковь", 41, 0.9, 0.2, 9.6);
+const onion = ing("ing-onion", "Лук репчатый", 40, 1.1, 0.1, 9);
+const eggplant = ing("ing-eggplant", "Баклажан", 24, 1, 0.2, 6);
+const zucchini = ing("ing-zucchini", "Цукини", 17, 1.2, 0.3, 3);
+const bellPepper = ing("ing-bell-pepper", "Болгарский перец", 31, 1, 0.3, 6);
+const cod = ing("ing-cod", "Треска", 82, 18, 0.7, 0);
+const cauliflower = ing("ing-cauliflower", "Цветная капуста", 25, 2, 0.3, 5);
+const walnut = ing("ing-walnut", "Грецкий орех", 654, 15, 65, 14);
+const raisin = ing("ing-raisin", "Изюм", 299, 3, 0.5, 66);
+const honey = ing("ing-honey", "Мёд", 304, 0.8, 0, 82);
+const oliveOil = ing("ing-olive-oil", "Оливковое масло", 884, 0, 100, 0);
+const blueberry = ing("ing-blueberry", "Черника", 57, 0.7, 0.3, 14);
 
 const recipe = (id, title, description, servings, items, imageUrl = null, mealTypes = [], cookingMethod = null) =>
   Recipe.restore({
@@ -69,6 +86,19 @@ export const recipeSeed = [
     [yogurt, 200],
     [banana, 100],
   ], null, ["snack"], null),
+  recipe("rec-lunch-chicken-burger", "Куриный бургер", "Отбивная из курицы в булке с овощами", 1, [
+    [chicken, 150],
+    [bread, 60],
+    [cheese, 30],
+    [tomato, 50],
+  ], null, ["lunch"], "Жарка"),
+  recipe("rec-lunch-chicken-plov", "Плов с курицей", "Рис с курицей, морковью и луком", 1, [
+    [rice, 150],
+    [chicken, 150],
+    [carrot, 80],
+    [onion, 60],
+    [oliveOil, 15],
+  ], null, ["lunch", "dinner"], "Варка"),
 ];
 
 export const seedRecipes = async (recipeRepo) => {

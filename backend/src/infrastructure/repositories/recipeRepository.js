@@ -6,9 +6,12 @@ import { loadRecipesFromCsv } from "../seeds/csvRecipes.js";
 
 const driver = process.env.DB_DRIVER || "memory";
 
-// Рецепты из backend/data/recipes.csv; если файла нет, берём тестовый сид
 const csvRecipes = loadRecipesFromCsv();
-const initialRecipes = csvRecipes.length ? csvRecipes : recipeSeed;
+// Добавляем рецепты из recipeSeed, которых нет в CSV (чтобы не было дублей)
+const seedRecipesNotInCsv = recipeSeed.filter(
+  (rs) => !csvRecipes.some((c) => c.id === rs.id),
+);
+const initialRecipes = [...csvRecipes, ...seedRecipesNotInCsv];
 console.log(`Загружено рецептов: ${initialRecipes.length}`);
 
 let recipeRepository;
