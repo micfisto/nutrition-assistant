@@ -646,3 +646,42 @@ body {
     padding: 18px 12px;
   }
 }
+
+/* ===== Правки для телефона ===== */
+@media (max-width: 600px) {
+  .site-header {
+    position: static;
+    padding: 10px 12px;
+  }
+  .logo__mark {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+  .logo__text {
+    font-size: 18px;
+  }
+  .nav {
+    gap: 6px 14px;
+  }
+  .nav a {
+    font-size: 14px;
+  }
+
+  .recipe-card__image {
+    height: 190px;
+  }
+
+  .footer__brand,
+  .footer__col {
+    flex: none;
+    width: 100%;
+  }
+}
+
+/* Фото в окне рецепта: пропорции без сплющивания */
+.modal__photo {
+  height: auto;
+  aspect-ratio: 16 / 10;
+  max-height: 240px;
+}
