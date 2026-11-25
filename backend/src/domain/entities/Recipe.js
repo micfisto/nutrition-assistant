@@ -235,7 +235,7 @@ export class Recipe {
         if (trimmed.length === 0)
             return null;
 
-        if (trimmed.length > 100)
+        if (trimmed.length > 1000)
             throw new DomainError(RecipeErrors.InvalidCookingMethod);
 
         return trimmed;
