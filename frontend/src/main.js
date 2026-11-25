@@ -14,6 +14,7 @@ import {
   getSources,
   setSource,
   wouldReplaceCustom,
+  hasNorm,
 } from "./services/planStorage.js";
 import "./styles/Weeks.css";
 
@@ -365,6 +366,7 @@ normInput.addEventListener("change", () => {
   if (value >= 800) {
     state.norm = value;
     saveNorm(value);
+    updateNormHint();
   }
   normInput.value = state.norm;
   renderTotals();
@@ -376,6 +378,23 @@ $("save-btn").addEventListener("click", () => {
   saveNote.textContent = ok ? "Меню сохранено ✓" : "Не удалось сохранить";
   setTimeout(() => (saveNote.textContent = ""), 2000);
 });
+
+const normHintEl = $("norm-hint");
+
+function updateNormHint() {
+  normHintEl.textContent = hasNorm()
+    ? ""
+    : "Норма не рассчитана, пока 2000 ккал. Посчитайте её в калькуляторе выше.";
+}
+
+window.addEventListener("norm:changed", (e) => {
+  state.norm = e.detail.calories;
+  normInput.value = state.norm;
+  updateNormHint();
+  renderTotals();
+});
+
+updateNormHint();
 
 /* ---------- Запуск ---------- */
 renderWeeks();

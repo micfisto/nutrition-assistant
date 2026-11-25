@@ -6,6 +6,7 @@ import {
 } from "../utils/nutritionCalc.js";
 import { initDatePicker, parseRuDate } from "./datePicker.js";
 import { hasToken, updateProfile } from "../services/profileApi.js";
+import { saveNorm } from "../services/planStorage.js";
 
 export function initCalculator(root) {
   let goal = "MAINTAIN";
@@ -158,6 +159,14 @@ export function initCalculator(root) {
     if (!lastInput) return;
     lastResult = calcTargets({ ...lastInput, goal });
     renderResult(lastResult);
+
+    // передаём норму в меню
+    saveNorm(lastResult.calories);
+    window.dispatchEvent(
+      new CustomEvent("norm:changed", {
+        detail: { calories: lastResult.calories },
+      }),
+    );
   }
 
   function process() {
@@ -232,14 +241,18 @@ export function initCalculator(root) {
     }
 
     const name = e.target.name;
-    if (fieldNames.includes(name) && e.target.classList.contains("is-invalid")) {
+    if (
+      fieldNames.includes(name) &&
+      e.target.classList.contains("is-invalid")
+    ) {
       showFieldError(name, validateInput(readForm())[name]);
     }
   });
 
   form.addEventListener("focusout", (e) => {
     const name = e.target.name;
-    if (!fieldNames.includes(name) || submitted || e.target.value === "") return;
+    if (!fieldNames.includes(name) || submitted || e.target.value === "")
+      return;
     showFieldError(name, validateInput(readForm())[name]);
   });
 

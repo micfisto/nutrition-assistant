@@ -37,7 +37,11 @@ function normalize(parsed) {
     data.weeks[week] = { ...(parsed?.weeks?.[week] ?? {}) };
 
     // старый формат хранил один флажок «повторять первую неделю»
-    const raw = parsed?.sources ? parsed.sources[week] : parsed?.repeat ? 1 : null;
+    const raw = parsed?.sources
+      ? parsed.sources[week]
+      : parsed?.repeat
+        ? 1
+        : null;
     const source = Number(raw);
     data.sources[week] = source >= 1 && source < week ? source : null;
   });
@@ -191,5 +195,13 @@ export function saveNorm(value) {
     localStorage.setItem(NORM_KEY, String(value));
   } catch {
     /* хранилище недоступно, не страшно */
+  }
+}
+
+export function hasNorm() {
+  try {
+    return Number(localStorage.getItem(NORM_KEY)) > 0;
+  } catch {
+    return false;
   }
 }
