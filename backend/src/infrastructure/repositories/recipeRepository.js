@@ -4,16 +4,19 @@ import { loadRecipesFromCsv } from "../seeds/csvRecipes.js";
 
 const driver = process.env.DB_DRIVER || "memory";
 
-// старые тестовые рецепты без фото, их не показываем
+// старые тестовые рецепты без фото и лишние позиции, их не показываем
 const LEGACY_IDS = [
   "rec-oatmeal",
   "rec-omelette",
   "rec-chicken-rice",
   "rec-salmon",
   "rec-yogurt",
+  "rec-lunch-chicken-burger",
 ];
 
-const csvRecipes = loadRecipesFromCsv();
+const csvRecipes = loadRecipesFromCsv().filter(
+  (r) => !LEGACY_IDS.includes(r.id),
+);
 const seedExtra = recipeSeed.filter(
   (r) => !LEGACY_IDS.includes(r.id) && !csvRecipes.some((c) => c.id === r.id),
 );
