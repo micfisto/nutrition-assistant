@@ -280,7 +280,7 @@ async function loadPlans(panel) {
 }
 
 /* ---------- Запуск страницы ---------- */
-function init() {
+export function init() {
   const root = document.getElementById("account-module");
   if (!root) return;
 
@@ -336,5 +336,3 @@ function init() {
 
   openTab("norms");
 }
-
-init();

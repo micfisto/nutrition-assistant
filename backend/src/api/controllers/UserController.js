@@ -58,23 +58,16 @@ export async function register(req, res, next) {
 
 export async function login(req, res, next) {
   try {
-    console.log('Login request body:', req.body);
     const { loginOrEmail, password } = req.body;
 
-    console.log('Extracted loginOrEmail:', loginOrEmail, 'password:', password ? '***' : 'missing');
-
     if (!loginOrEmail || !password) {
-      console.log('Missing credentials');
       throw new DomainError('INVALID_CREDENTIALS');
     }
 
     const user = await userService.validateUserForLogin(loginOrEmail);
     const userData = user.toJSON();
 
-    console.log('User found, comparing password');
     const isMatch = await bcrypt.compare(password, userData.passwordHash);
-    console.log('Password match:', isMatch);
-
     if (!isMatch) {
       throw new DomainError('INVALID_CREDENTIALS');
     }
@@ -91,7 +84,6 @@ export async function login(req, res, next) {
       }
     });
   } catch (err) {
-    console.log('Login error:', err);
     next(err);
   }
 }

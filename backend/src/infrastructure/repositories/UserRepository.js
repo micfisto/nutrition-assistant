@@ -1,22 +1,19 @@
-import {InMemoryUserRepository} from "./InMemoryRepositories/InMemoryUserRepository.js";
-// import { OrmUserRepository } from './OrmUserRepository.js';
-// import { prisma } from '../orm/PrismaClient.js';
+import { InMemoryUserRepository } from "./InMemoryRepositories/InMemoryUserRepository.js";
 
-const driver = process.env.DB_DRIVER || 'memory';
+const driver = process.env.DB_DRIVER || "memory";
 
 let userRepository;
 
-console.log('DB_DRIVER:', driver);
-
-if (driver === 'memory') {
-    userRepository = new InMemoryUserRepository();
-    console.log('Используется хранилище в оперативной памяти (In-Memory)');
-} else if (driver === 'orm') {
-    // ORM repository not implemented yet, falling back to memory
-    userRepository = new InMemoryUserRepository();
-    console.log('ORM repository not implemented, falling back to In-Memory');
+if (driver === "orm") {
+  const { OrmUserRepository } = await import(
+    "./OrmRepositories/OrmUserRepository.js"
+  );
+  const { prisma } = await import("../orm/PrismaClient.js");
+  userRepository = new OrmUserRepository(prisma.userEntity);
+  console.log("Пользователи: Supabase (ORM)");
+} else {
+  userRepository = new InMemoryUserRepository();
+  console.log("Пользователи: оперативная память (In-Memory)");
 }
 
-console.log('userRepository initialized:', !!userRepository);
-
-export {userRepository};
+export { userRepository };

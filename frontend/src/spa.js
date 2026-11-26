@@ -8,10 +8,13 @@ import { isAuthenticated, logout } from "./services/authApi.js";
 const home = document.getElementById("view-home");
 const auth = document.getElementById("view-auth");
 
+// скрипты страниц попадают в production-сборку, потому что Vite видит их заранее
+const pageModules = import.meta.glob("./pages/*.js");
+
 const PAGES = {
-  "#/login": { html: loginHtml, script: "/src/pages/login.js" },
-  "#/register": { html: registerHtml, script: "/src/pages/register.js" },
-  "#/account": { html: accountHtml, script: "/src/pages/account.js" },
+  "#/login": { html: loginHtml, script: "./pages/login.js" },
+  "#/register": { html: registerHtml, script: "./pages/register.js" },
+  "#/account": { html: accountHtml, script: "./pages/account.js" },
   "#/about": { html: aboutHtml, script: null },
 };
 
@@ -45,8 +48,13 @@ async function showAuth(page) {
   });
 
   window.scrollTo({ top: 0 });
+
   if (page.script) {
-    await import(/* @vite-ignore */ `${page.script}?v=${Date.now()}`);
+    const load = pageModules[page.script];
+    if (load) {
+      const module = await load();
+      module.init?.();
+    }
   }
 }
 

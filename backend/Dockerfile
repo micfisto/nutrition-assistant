@@ -3,17 +3,17 @@ FROM node:20-alpine
 WORKDIR /app
 
 COPY package*.json ./
-
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 
 COPY prisma ./prisma
-COPY src ./src
-
+COPY prisma7.config.ts ./
 RUN npx prisma generate
+
+COPY data ./data
+COPY src ./src
 
 ENV NODE_ENV=production
 ENV PORT=5000
-ENV DB_DRIVER=memory
 
 EXPOSE 5000
 

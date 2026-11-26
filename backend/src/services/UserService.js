@@ -82,26 +82,19 @@ export class UserService {
     }
 
     async validateUserForLogin(loginOrEmail) {
-        console.log('Looking for user with:', loginOrEmail);
-        let user = await userRepository.findByLogin(loginOrEmail);
-        console.log('Found by login:', !!user);
+        const identifier =
+            typeof loginOrEmail === 'string' ? loginOrEmail.trim().toLowerCase() : '';
 
-        if (!user) {
-            user = await userRepository.findByEmail(loginOrEmail);
-            console.log('Found by email:', !!user);
-        }
+        let user = await userRepository.findByLogin(identifier);
+        if (!user)
+            user = await userRepository.findByEmail(identifier);
 
-        if (!user) {
-            console.log('User not found');
+        if (!user)
             throw new DomainError(UserErrors.NotFound);
-        }
 
-        if (user.status !== 'ACTIVE') {
-            console.log('User not active, status:', user.status);
+        if (user.status !== 'ACTIVE')
             throw new DomainError(UserErrors.NotActive);
-        }
 
-        console.log('User validated:', user.login, user.email, user.status);
         return user;
     }
 

@@ -15,6 +15,7 @@ import {
 } from '../utils/validation.js';
 import { initDatePicker, parseRuDate } from '../components/datePicker.js';
 
+export function init() {
 redirectIfAuthenticated();
 
 const form = document.getElementById('register-form');
@@ -133,3 +134,4 @@ form.addEventListener('submit', async (e) => {
     submitBtn.textContent = 'Зарегистрироваться';
   }
 });
+}
