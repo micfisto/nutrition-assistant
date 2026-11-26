@@ -4,12 +4,20 @@ import { loadRecipesFromCsv } from "../seeds/csvRecipes.js";
 
 const driver = process.env.DB_DRIVER || "memory";
 
+// старые тестовые рецепты без фото, их не показываем
+const LEGACY_IDS = [
+  "rec-oatmeal",
+  "rec-omelette",
+  "rec-chicken-rice",
+  "rec-salmon",
+  "rec-yogurt",
+];
+
 const csvRecipes = loadRecipesFromCsv();
-// Добавляем рецепты из recipeSeed, которых нет в CSV (чтобы не было дублей)
-const seedRecipesNotInCsv = recipeSeed.filter(
-  (rs) => !csvRecipes.some((c) => c.id === rs.id),
+const seedExtra = recipeSeed.filter(
+  (r) => !LEGACY_IDS.includes(r.id) && !csvRecipes.some((c) => c.id === r.id),
 );
-const initialRecipes = [...csvRecipes, ...seedRecipesNotInCsv];
+const initialRecipes = [...csvRecipes, ...seedExtra];
 console.log(`Загружено рецептов: ${initialRecipes.length}`);
 
 const recipeRepository = new InMemoryRecipeRepository(initialRecipes);
