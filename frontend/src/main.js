@@ -105,11 +105,12 @@ function renderTotals() {
 function renderPlan() {
   dayPlanEl.innerHTML = "";
   const ids = state.plan[state.activeDay];
-  dayCountEl.textContent = ids.length ? `Блюд: ${ids.length}` : "";
 
   const items = ids
     .map((id, index) => ({ recipe: byId.get(id), index }))
     .filter((item) => item.recipe);
+
+  dayCountEl.textContent = items.length ? `Блюд: ${items.length}` : "";
 
   if (items.length === 0) {
     const empty = document.createElement("li");
