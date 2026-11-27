@@ -46,6 +46,7 @@ export const errorMessages = {
   'AUTH_TOKEN_EXPIRED': 'Срок действия токена истёк',
   'AUTH_TOKEN_INVALID': 'Недействительный токен',
   'INVALID_CREDENTIALS': 'Неверный логин или пароль',
+    'INVALID_PASSWORD': 'Неверный пароль',
 
   // General errors
   'INVALID_TARGET_CALORIES': 'Некорректное значение калорий (минимум 500)',

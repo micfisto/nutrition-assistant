@@ -38,3 +38,10 @@ export function getProfile() {
 export function updateProfile(data) {
   return request("/profile", { method: "PUT", body: JSON.stringify(data) });
 }
+
+export function deleteAccount(password) {
+  return request("/auth/me", {
+    method: "DELETE",
+    body: JSON.stringify({ password }),
+  });
+}

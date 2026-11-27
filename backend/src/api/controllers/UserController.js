@@ -4,6 +4,7 @@ import { userService } from '../../services/UserService.js';
 import { userProfileService } from '../../services/UserProfileService.js';
 import { userRepository } from '../../infrastructure/repositories/UserRepository.js';
 import { DomainError } from '../../domain/errors/DomainError.js';
+import { UserProfileErrors } from '../../domain/errors/UserProfileErrors.js';
 
 const generateToken = (userId) => {
   const secret = process.env.JWT_SECRET || 'dev-secret-key-change-in-production';
@@ -98,6 +99,39 @@ export async function getMe(req, res, next) {
 
     const { passwordHash, ...userData } = user.toJSON();
     res.json(userData);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function deleteMe(req, res, next) {
+  try {
+    const { password } = req.body ?? {};
+    if (!password) {
+      throw new DomainError('INVALID_PASSWORD');
+    }
+
+    const user = await userRepository.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'USER_NOT_FOUND' });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.toJSON().passwordHash);
+    if (!isMatch) {
+      throw new DomainError('INVALID_PASSWORD');
+    }
+
+    // профиль удаляем вместе с аккаунтом; если его уже нет, это не ошибка
+    try {
+      const profile = await userProfileService.getProfileByUserId(user.id);
+      await userProfileService.deleteProfile(profile.id);
+    } catch (err) {
+      if (err.code !== UserProfileErrors.ProfileNotFound) throw err;
+    }
+
+    await userService.deleteUser(user.id);
+
+    res.json({ message: 'Аккаунт удалён' });
   } catch (err) {
     next(err);
   }

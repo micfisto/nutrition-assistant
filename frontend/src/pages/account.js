@@ -1,6 +1,6 @@
 import "../styles/Account.css";
 import { getUser, isAuthenticated, logout } from "../services/authApi.js";
-import { getProfile } from "../services/profileApi.js";
+import { getProfile, deleteAccount } from "../services/profileApi.js";
 import { getFavorites, removeFavorite } from "../services/favoritesApi.js";
 import { fetchRecipes } from "../services/recipesApi.js";
 import { createRecipeCard } from "../components/recipeCard.js";
@@ -171,7 +171,6 @@ async function loadFavorites(panel) {
 }
 
 /* ---------- Вкладка «Мои планы» ---------- */
-/* ---------- Вкладка «Мои планы» ---------- */
 function renderPlans(panel, byId, week) {
   panel.innerHTML = "";
 
@@ -279,6 +278,85 @@ async function loadPlans(panel) {
   renderPlans(panel, new Map(recipes.map((r) => [r.id, r])), getWeek());
 }
 
+/* ---------- Удаление аккаунта ---------- */
+function openDeleteDialog() {
+  const overlay = document.createElement("div");
+  overlay.className = "modal modal--open";
+  overlay.innerHTML = `
+    <div class="modal__window confirm" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+      <button class="modal__close" type="button" aria-label="Закрыть">×</button>
+      <h2 class="modal__title" id="confirm-title">Удалить аккаунт?</h2>
+      <p class="confirm__text">
+        Профиль, нормы и избранное будут удалены без возможности восстановления.
+        Чтобы подтвердить, введите пароль.
+      </p>
+      <form class="confirm__form" novalidate>
+        <label class="confirm__label" for="confirm-password">Пароль</label>
+        <input id="confirm-password" type="password" class="confirm__input" autocomplete="current-password" />
+        <p class="confirm__error" role="alert"></p>
+        <div class="confirm__actions">
+          <button type="button" class="confirm__cancel">Отмена</button>
+          <button type="submit" class="confirm__delete">Удалить навсегда</button>
+        </div>
+      </form>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  document.body.style.overflow = "hidden";
+
+  const form = overlay.querySelector(".confirm__form");
+  const input = overlay.querySelector(".confirm__input");
+  const errorEl = overlay.querySelector(".confirm__error");
+  const deleteBtn = overlay.querySelector(".confirm__delete");
+
+  function close() {
+    document.removeEventListener("keydown", onKeydown);
+    overlay.remove();
+    document.body.style.overflow = "";
+  }
+
+  function onKeydown(e) {
+    if (e.key === "Escape") close();
+  }
+
+  document.addEventListener("keydown", onKeydown);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) close();
+  });
+  overlay.querySelector(".modal__close").addEventListener("click", close);
+  overlay.querySelector(".confirm__cancel").addEventListener("click", close);
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const password = input.value;
+    if (!password) {
+      errorEl.textContent = "Введите пароль";
+      input.focus();
+      return;
+    }
+
+    errorEl.textContent = "";
+    deleteBtn.disabled = true;
+    deleteBtn.textContent = "Удаляем...";
+
+    try {
+      await deleteAccount(password);
+      logout();
+      close();
+      alert("Аккаунт удалён");
+      window.location.href = "/";
+    } catch (err) {
+      errorEl.textContent = err.message;
+      deleteBtn.disabled = false;
+      deleteBtn.textContent = "Удалить навсегда";
+      input.focus();
+    }
+  });
+
+  input.focus();
+}
+
 /* ---------- Запуск страницы ---------- */
 export function init() {
   const root = document.getElementById("account-module");
@@ -334,5 +412,8 @@ export function init() {
     tab.addEventListener("click", () => openTab(tab.dataset.tab)),
   );
 
+  root
+    .querySelector("#delete-account-btn")
+    ?.addEventListener("click", openDeleteDialog); 
   openTab("norms");
 }

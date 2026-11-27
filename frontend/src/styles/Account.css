@@ -288,6 +288,136 @@
   overflow-x: auto;
 }
 
+/* ===== удаление аккаунта ===== */
+.account__danger {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 24px;
+  margin-top: 36px;
+  padding: 18px 20px;
+  border: 1px solid #ecc9c4;
+  border-radius: 18px;
+  background: #fdf5f4;
+}
+
+.account__danger h3 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  color: var(--garnet);
+}
+
+.account__danger p {
+  max-width: 520px;
+  margin: 0;
+  font-size: 14px;
+  color: var(--olive);
+}
+
+.account__delete-btn {
+  padding: 11px 22px;
+  border: 1px solid var(--garnet);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--garnet);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.account__delete-btn:hover {
+  background: var(--garnet);
+  color: #fff;
+}
+
+.modal__window.confirm {
+  max-width: 440px;
+}
+
+.confirm__text {
+  margin: 0 0 16px;
+  color: var(--olive);
+}
+
+.confirm__label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--olive);
+}
+
+.confirm__input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--timber);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--raisin);
+  font-size: 15px;
+}
+
+.confirm__input:focus {
+  outline: none;
+  border-color: var(--garnet);
+  box-shadow: 0 0 0 3px #f6e6e3;
+}
+
+.confirm__error {
+  min-height: 20px;
+  margin: 6px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--garnet);
+}
+
+.confirm__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.confirm__cancel,
+.confirm__delete {
+  padding: 11px 22px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.confirm__cancel {
+  border: 1px solid var(--timber);
+  background: #fff;
+  color: var(--raisin);
+}
+
+.confirm__cancel:hover {
+  border-color: var(--green);
+  background: var(--green-light);
+}
+
+.confirm__delete {
+  border: 1px solid var(--garnet);
+  background: var(--garnet);
+  color: #fff;
+}
+
+.confirm__delete:hover:not(:disabled) {
+  background: #5e211d;
+}
+
+.confirm__delete:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 @media (max-width: 600px) {
   .plans-weeks {
     width: 100%;
